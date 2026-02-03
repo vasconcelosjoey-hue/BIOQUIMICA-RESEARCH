@@ -186,9 +186,16 @@ const App: React.FC = () => {
           
           <div className="text-center md:text-right space-y-1">
             <p className="text-sm font-medium opacity-60 italic">&copy; {new Date().getFullYear()} - Sistema Premium de Monitoramento</p>
-            <div className="flex justify-center md:justify-end gap-4 mt-4">
-              <a href="#" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-colors"><i className="fab fa-linkedin-in"></i></a>
-              <a href="#" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-colors"><i className="fab fa-instagram"></i></a>
+            <div className="flex justify-center md:justify-end gap-3 mt-4">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-all hover:scale-110 shadow-lg shadow-black/20" title="GitHub Repository">
+                <i className="fab fa-github text-lg"></i>
+              </a>
+              <a href="#" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-all hover:scale-110 shadow-lg shadow-black/20" title="LinkedIn">
+                <i className="fab fa-linkedin-in text-lg"></i>
+              </a>
+              <a href="#" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-all hover:scale-110 shadow-lg shadow-black/20" title="Instagram">
+                <i className="fab fa-instagram text-lg"></i>
+              </a>
             </div>
           </div>
         </div>
