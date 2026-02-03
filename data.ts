@@ -2,7 +2,7 @@
 import { College } from './types';
 
 export const INITIAL_COLLEGES: College[] = [
-  // --- MINAS GERAIS (MG) - 50 REGISTROS (DIRETÓRIO MESTRE) ---
+  // --- MINAS GERAIS (MG) - 50 REGISTROS (DIRETÓRIO MESTRE COMPLETO) ---
   { id: 'mg-ufmg-bh', name: 'UFMG - Universidade Federal de Minas Gerais', city: 'Belo Horizonte', state: 'MG', address: 'Av. Pres. Antônio Carlos, 6627 - Pampulha', type: 'Pública (Federal)', phone: '(31) 3409-5000', website: 'ufmg.br', courses: ['Medicina', 'Enfermagem', 'Odontologia', 'Biomedicina', 'Nutrição', 'Fisioterapia', 'Ed. Física', 'C. Biológicas', 'Eng. Alimentos', 'Eng. Ambiental'], createdAt: 1740000001000 },
   { id: 'mg-cefet-bh', name: 'CEFET-MG - Centro Federal de Educação Tecnológica', city: 'Belo Horizonte', state: 'MG', address: 'Av. Amazonas, 5253 - Nova Suíça', type: 'Pública (Federal)', phone: '(31) 3319-7000', website: 'cefetmg.br', courses: ['Eng. Ambiental e Sanitária'], createdAt: 1740000001001 },
   { id: 'mg-ufjf-jf', name: 'UFJF - Universidade Federal de Juiz de Fora', city: 'Juiz de Fora', state: 'MG', address: 'R. José Lourenço Kelmer, s/n - Campus Universitário', type: 'Pública (Federal)', phone: '(32) 2102-3911', website: 'ufjf.br', courses: ['Medicina', 'Enfermagem', 'Odontologia', 'Fisioterapia', 'Nutrição', 'Ed. Física', 'C. Biológicas', 'Eng. Ambiental'], createdAt: 1740000001002 },
@@ -124,20 +124,20 @@ export const INITIAL_COLLEGES: College[] = [
   { id: 'ac-ifac-xapuri', name: 'IFAC (Campus Xapuri)', city: 'Xapuri', state: 'AC', address: 'Rua Cel. Brandão, s/n', type: 'Federal', phone: '(68) 3302-0100', website: 'ifac.edu.br', courses: ['Biologia', 'Biotecnologia'], createdAt: 1740000000510 },
   { id: 'ac-ifac-tarauaca', name: 'IFAC (Campus Tarauacá)', city: 'Tarauacá', state: 'AC', address: 'Rua Cel. Juvêncio de Menezes, s/n', type: 'Federal', phone: '(68) 3302-0100', website: 'ifac.edu.br', courses: ['Biologia'], createdAt: 1740000000511 },
 
-  // --- AMAZONAS (AM) - 3 REGISTROS ---
+  // --- AMAZONAS (AM) ---
   { id: 'am-ufam-sede', name: 'UFAM (Sede)', city: 'Manaus', state: 'AM', address: 'Av. Rodrigo Otávio, 6200, Coroado', type: 'Federal', phone: '(92) 3305-1181', website: 'ufam.edu.br', courses: ['Farmácia', 'Enfermagem', 'Medicina', 'Biologia', 'Biotecnologia', 'Nutrição'], createdAt: 1740000000600 },
   { id: 'am-uea-esa', name: 'UEA (ESA - Escola Superior de Ciências da Saúde)', city: 'Manaus', state: 'AM', address: 'Av. Carvalho Leal, 1777, Cachoeirinha', type: 'Estadual', phone: '(92) 3878-4362', website: 'uea.edu.br', courses: ['Medicina', 'Enfermagem', 'Odontologia', 'Saúde Pública'], createdAt: 1740000000601 },
   { id: 'am-fametro-sede', name: 'FAMETRO (Centro Universitário)', city: 'Manaus', state: 'AM', address: 'Av. Constantino Nery, 3000, Chapada', type: 'Privada', phone: '(92) 2101-1000', website: 'fametro.edu.br', courses: ['Biomedicina', 'Farmácia', 'Enfermagem', 'Medicina', 'Biologia', 'Nutrição', 'Medicina Veterinária'], createdAt: 1740000000602 },
 
-  // --- BAHIA (BA) - 3 REGISTROS ---
+  // --- BAHIA (BA) ---
   { id: 'ba-ufba-salvador', name: 'UFBA - Universidade Federal da Bahia', city: 'Salvador', state: 'BA', address: 'Rua Augusto Viana, s/n, Canela', type: 'Federal', phone: '(71) 3283-7070', website: 'ufba.br', courses: ['Bioquímica', 'Biomedicina', 'Farmácia', 'Enfermagem', 'Medicina', 'Biologia'], createdAt: 1740000000300 },
   { id: 'ba-uneb-salvador', name: 'UNEB - Universidade do Estado da Bahia', city: 'Salvador', state: 'BA', address: 'Rua Silveira Martins, 2555, Cabula', type: 'Estadual', phone: '(71) 3117-2200', website: 'uneb.br', courses: ['Enfermagem', 'Farmácia', 'Medicina', 'Biologia'], createdAt: 1740000000302 },
   { id: 'ba-uesb-conquista', name: 'UESB - Univ. Estadual do Sudoeste da Bahia', city: 'Vitória da Conquista', state: 'BA', address: 'Estrada do Bem Querer, km 4', type: 'Estadual', phone: '(77) 3424-8600', website: 'uesb.br', courses: ['Farmácia', 'Enfermagem', 'Medicina', 'Biologia'], createdAt: 1740000000310 },
 
-  // --- RIO GRANDE DO NORTE (RN) - 2 REGISTROS ---
+  // --- RIO GRANDE DO NORTE (RN) ---
   { id: 'rn-ufrn-natal', name: 'UFRN (Univ. Federal do RN)', city: 'Natal', state: 'RN', address: 'Campus Universitário, Lagoa Nova, Natal - RN', type: 'Federal', phone: '(84) 3215-3416', website: 'ufrn.br', courses: ['Bioquímica', 'Biomedicina', 'Farmácia'], createdAt: 1740000000100 },
   { id: 'rn-ufersa-mossoro', name: 'UFERSA (Univ. Fed. Rural do Semi-Árido)', city: 'Mossoró', state: 'RN', address: 'Av. Francisco Mota, 572, Costa e Silva', type: 'Federal', phone: '(84) 3317-8224', website: 'ufersa.edu.br', courses: ['Biotecnologia', 'Medicina'], createdAt: 1740000000103 },
 
-  // --- PARÁ (PA) - 1 REGISTRO ---
+  // --- PARÁ (PA) ---
   { id: 'pa-ufpa-belem', name: 'Universidade Federal do Pará (UFPA)', city: 'Belém', state: 'PA', address: 'Rua Augusto Corrêa, 1 - Guamá', type: 'Federal', phone: '(91) 3201-7000', website: 'www.ufpa.br', courses: ['Bioquímica', 'Biotecnologia'], createdAt: 1740000000011 }
 ];

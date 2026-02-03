@@ -13,13 +13,33 @@ const App: React.FC = () => {
   // Foto institucional enviada via Firebase Storage
   const researcherImg = "https://firebasestorage.googleapis.com/v0/b/bioquimica-research.firebasestorage.app/o/Gemini_Generated_Image_9z0axj9z0axj9z0a.png?alt=media&token=c7bca208-998d-4505-a9c8-e5108b10cdf7";
 
+  // Função auxiliar para criar uma chave única e limpa para deduplicação
+  const getCleanKey = (name: string, city: string) => {
+    return `${name.replace(/[().-]/g, '').toLowerCase().trim()}|${city.toLowerCase().trim()}`;
+  };
+
   const [colleges, setColleges] = useState<College[]>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_repo_v7');
+      // v8: Migração para limpar dados legados e duplicatas de versões anteriores
+      const saved = localStorage.getItem('bioquimica_repo_v8');
       let savedColleges: College[] = saved ? JSON.parse(saved) : [];
+      
       const registry = new Map<string, College>();
-      INITIAL_COLLEGES.forEach(c => registry.set(`${c.name.toLowerCase().trim()}|${c.city.toLowerCase().trim()}`, c));
-      savedColleges.forEach(c => registry.set(`${c.name.toLowerCase().trim()}|${c.city.toLowerCase().trim()}`, c));
+      
+      // 1. Carrega dados iniciais higienizados
+      INITIAL_COLLEGES.forEach(c => {
+        registry.set(getCleanKey(c.name, c.city), c);
+      });
+      
+      // 2. Mescla com dados salvos (novos registros do usuário)
+      savedColleges.forEach(c => {
+        const key = getCleanKey(c.name, c.city);
+        // Só adiciona se não for uma das IDs padrões já existentes ou se for um registro novo real
+        if (!registry.has(key)) {
+          registry.set(key, c);
+        }
+      });
+      
       return Array.from(registry.values());
     } catch (e) {
       return INITIAL_COLLEGES;
@@ -28,7 +48,7 @@ const App: React.FC = () => {
 
   const [checkedIds, setCheckedIds] = useState<Set<string>>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_checked_v7');
+      const saved = localStorage.getItem('bioquimica_checked_v8');
       return saved ? new Set(JSON.parse(saved)) : new Set();
     } catch (e) {
       return new Set();
@@ -48,11 +68,11 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_repo_v7', JSON.stringify(colleges));
+    localStorage.setItem('bioquimica_repo_v8', JSON.stringify(colleges));
   }, [colleges]);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_checked_v7', JSON.stringify(Array.from(checkedIds)));
+    localStorage.setItem('bioquimica_checked_v8', JSON.stringify(Array.from(checkedIds)));
   }, [checkedIds]);
 
   const uniqueStates = useMemo(() => {
@@ -134,10 +154,9 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Hero Section - Foto do Pesquisador + Título */}
+        {/* Hero Section */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 mb-12 md:mb-20 items-center lg:items-center">
           
-          {/* Avatar Institucional Premium */}
           <div className="shrink-0 relative">
             <div className="absolute inset-0 bg-teal-600/10 rounded-full blur-3xl"></div>
             <div className="w-40 h-40 md:w-56 md:h-56 rounded-full p-2 border-2 border-dashed border-teal-200 animate-[spin_20s_linear_infinite] absolute inset-[-10px] pointer-events-none opacity-40"></div>
@@ -148,7 +167,6 @@ const App: React.FC = () => {
                 className="w-full h-full object-cover scale-110"
               />
             </div>
-            {/* Tag flutuante */}
             <div className="absolute -bottom-2 -right-2 md:bottom-2 md:right-2 z-20 bg-teal-950 text-white px-3 py-1.5 rounded-full border-4 border-white shadow-xl flex items-center gap-2">
               <i className="fas fa-check-circle text-teal-400 text-[10px]"></i>
               <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest">Verified Expert</span>
@@ -164,7 +182,7 @@ const App: React.FC = () => {
               BIOQUIMICA <br className="hidden md:block"/><span className="text-teal-600 italic">RESEARCH</span>
             </h2>
             <p className="text-teal-900/50 font-medium text-sm md:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8">
-              A maior base de dados consolidada para pesquisa acadêmica em biociências do Brasil. Explore instituições, cursos e contatos atualizados em tempo real.
+              Repositório nacional consolidado. Mapeamos instituições federais, estaduais e privadas com dados exaustivos em biociências.
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
@@ -186,7 +204,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Search & Filters */}
+        {/* Filters */}
         <div className="glass-card rounded-[2.5rem] p-6 md:p-10 mb-12 border border-teal-100 shadow-lg relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-125 transition-transform duration-1000">
              <i className="fas fa-dna text-[120px] text-teal-900"></i>
@@ -231,7 +249,7 @@ const App: React.FC = () => {
               className="h-[56px] px-8 bg-teal-950 text-white font-black rounded-2xl hover:bg-teal-900 shadow-2xl transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1"
             >
               <i className="fas fa-plus-circle text-lg"></i>
-              <span className="text-xs uppercase tracking-[0.2em]">Adicionar Unidade</span>
+              <span className="text-xs uppercase tracking-[0.2em]">Novo Registro</span>
             </button>
           </div>
         </div>
@@ -249,13 +267,13 @@ const App: React.FC = () => {
           {filteredColleges.length === 0 && (
             <div className="col-span-full py-20 text-center opacity-50">
                <i className="fas fa-search-minus text-4xl text-teal-200 mb-4 block"></i>
-               <p className="text-sm font-black text-teal-900 uppercase tracking-widest">Nenhum resultado para os filtros atuais</p>
+               <p className="text-sm font-black text-teal-900 uppercase tracking-widest">Nenhum resultado encontrado</p>
             </div>
           )}
         </div>
       </main>
 
-      {/* Footer Final */}
+      {/* Footer */}
       <footer className="pt-20 pb-12 bg-white border-t border-teal-50">
         <div className="max-w-7xl mx-auto px-8 flex flex-col items-center gap-10">
           <div className="flex items-center gap-4">
@@ -269,8 +287,8 @@ const App: React.FC = () => {
              <div className="h-px w-20 bg-teal-100 hidden sm:block"></div>
           </div>
           <div className="text-center space-y-2">
-            <p className="text-[10px] font-bold text-teal-400 uppercase tracking-[0.3em]">Gestão Nacional de Dados Acadêmicos</p>
-            <p className="text-[10px] font-black text-teal-950/20 uppercase tracking-[0.4em]">POWERED BY JOI.A. © 2026</p>
+            <p className="text-[10px] font-bold text-teal-400 uppercase tracking-[0.3em]">Repositório Higienizado v8.0</p>
+            <p className="text-[10px] font-black text-teal-950/20 uppercase tracking-[0.4em]">© 2026 JOI.A. ACADEMIC DATA</p>
           </div>
         </div>
       </footer>
@@ -280,8 +298,7 @@ const App: React.FC = () => {
         onClose={() => setIsModalOpen(false)} 
         onAdd={(newCol) => {
           const isDuplicate = colleges.some(c => 
-            c.name.toLowerCase().trim() === newCol.name.toLowerCase().trim() &&
-            c.city.toLowerCase().trim() === newCol.city.toLowerCase().trim()
+            getCleanKey(c.name, c.city) === getCleanKey(newCol.name, newCol.city)
           );
           if (isDuplicate) return 'Esta instituição já consta no banco de dados.';
           const collegeWithMeta = { ...newCol, id: crypto.randomUUID(), createdAt: Date.now() };
