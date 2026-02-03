@@ -2,8 +2,8 @@
 import React from 'react';
 
 const LoadingScreen: React.FC = () => {
-  // Foto institucional premium
-  const researcherImg = "https://images.unsplash.com/photo-1532187875302-1df92329971d?auto=format&fit=crop&q=80&w=300&h=300";
+  // Foto institucional fornecida via Firebase Storage
+  const researcherImg = "https://firebasestorage.googleapis.com/v0/b/bioquimica-research.firebasestorage.app/o/Gemini_Generated_Image_9z0axj9z0axj9z0a.png?alt=media&token=c7bca208-998d-4505-a9c8-e5108b10cdf7";
 
   return (
     <div className="fixed inset-0 z-[999] bg-teal-950 flex flex-col items-center justify-center overflow-hidden">
@@ -18,7 +18,11 @@ const LoadingScreen: React.FC = () => {
         <div className="w-32 h-32 md:w-44 md:h-44 mb-12 relative group">
           <div className="absolute inset-[-15px] bg-teal-500/10 blur-3xl rounded-full animate-pulse"></div>
           <div className="relative bg-white p-1.5 w-full h-full rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(45,212,191,0.3)] animate-float overflow-hidden border-2 border-teal-400/30">
-            <img src={researcherImg} className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700" alt="Researcher Loading" />
+            <img 
+                src={researcherImg} 
+                className="w-full h-full object-cover rounded-full grayscale group-hover:grayscale-0 transition-all duration-1000" 
+                alt="Researcher Loading" 
+            />
           </div>
           {/* ADN Icon Badge */}
           <div className="absolute -bottom-2 -right-2 bg-teal-500 text-white w-10 h-10 md:w-12 md:h-12 rounded-full border-4 border-teal-950 flex items-center justify-center shadow-xl">

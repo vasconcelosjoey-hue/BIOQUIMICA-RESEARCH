@@ -18,8 +18,8 @@ const PremiumHeader: React.FC<PremiumHeaderProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // URL da imagem institucional (Pesquisador com modelo atômico)
-  const researcherImg = "https://images.unsplash.com/photo-1532187875302-1df92329971d?auto=format&fit=crop&q=80&w=200&h=200";
+  // URL da imagem institucional fornecida
+  const researcherImg = "https://firebasestorage.googleapis.com/v0/b/bioquimica-research.firebasestorage.app/o/Gemini_Generated_Image_9z0axj9z0axj9z0a.png?alt=media&token=c7bca208-998d-4505-a9c8-e5108b10cdf7";
 
   return (
     <header className="sticky top-0 z-[60] bg-white/95 backdrop-blur-md border-b border-teal-100 shadow-sm">
@@ -42,7 +42,7 @@ const PremiumHeader: React.FC<PremiumHeaderProps> = ({
                 <img 
                   src={researcherImg} 
                   alt="Researcher" 
-                  className="w-full h-full object-cover scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
             </div>

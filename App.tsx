@@ -10,8 +10,8 @@ import LoadingScreen from './components/LoadingScreen';
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
-  // Foto institucional enviada
-  const researcherImg = "https://images.unsplash.com/photo-1532187875302-1df92329971d?auto=format&fit=crop&q=80&w=600&h=600";
+  // Foto institucional enviada via Firebase Storage
+  const researcherImg = "https://firebasestorage.googleapis.com/v0/b/bioquimica-research.firebasestorage.app/o/Gemini_Generated_Image_9z0axj9z0axj9z0a.png?alt=media&token=c7bca208-998d-4505-a9c8-e5108b10cdf7";
 
   const [colleges, setColleges] = useState<College[]>(() => {
     try {
@@ -141,7 +141,7 @@ const App: React.FC = () => {
           <div className="shrink-0 relative">
             <div className="absolute inset-0 bg-teal-600/10 rounded-full blur-3xl"></div>
             <div className="w-40 h-40 md:w-56 md:h-56 rounded-full p-2 border-2 border-dashed border-teal-200 animate-[spin_20s_linear_infinite] absolute inset-[-10px] pointer-events-none opacity-40"></div>
-            <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-[8px] border-white shadow-[0_25px_60px_rgba(13,148,136,0.18)] overflow-hidden relative z-10 transition-transform hover:scale-[1.02] duration-500">
+            <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-[8px] border-white shadow-[0_25px_60px_rgba(13,148,136,0.18)] overflow-hidden relative z-10 transition-transform hover:scale-[1.05] duration-500">
               <img 
                 src={researcherImg} 
                 alt="Lead Researcher" 
