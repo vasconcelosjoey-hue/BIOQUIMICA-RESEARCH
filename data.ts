@@ -47,11 +47,127 @@ export const INITIAL_COLLEGES: College[] = [
   { id: 'sc-1', name: 'UFSC', city: 'Florianópolis', state: 'SC', type: 'Federal', phone: '(48) 3721-9000', website: 'ufsc.br', courses: ['Farmácia', 'Ciências Biológicas', 'Medicina'], createdAt: 1700000000033 },
   { id: 'rs-1', name: 'UFRGS', city: 'Porto Alegre', state: 'RS', type: 'Federal', phone: '(51) 3308-6000', website: 'ufrgs.br', courses: ['Biomedicina', 'Farmácia', 'Biotecnologia', 'Biologia'], createdAt: 1700000000034 },
   { id: 'rs-2', name: 'UFSM', city: 'Santa Maria', state: 'RS', type: 'Federal', phone: '(55) 3220-8000', website: 'ufsm.br', courses: ['Farmácia', 'Biologia', 'Medicina', 'Nutrição'], createdAt: 1700000000035 },
-  
-  // ADICIONAIS DO DOCUMENTO (OUTROS CAMPUS)
-  { id: 'pe-2', name: 'UFPE - CAA', city: 'Caruaru', state: 'PE', type: 'Federal', phone: '(81) 2103-9156', website: 'ufpe.br/caa', courses: ['Medicina', 'Nutrição (Base Bioquímica)'], createdAt: 1700000000036 },
-  { id: 'mg-3', name: 'UFU', city: 'Uberlândia', state: 'MG', type: 'Federal', phone: '(34) 3239-4411', website: 'ufu.br', courses: ['Biomedicina', 'Farmácia', 'Biotecnologia'], createdAt: 1700000000037 },
-  { id: 'mg-4', name: 'UFLA', city: 'Lavras', state: 'MG', type: 'Federal', phone: '(35) 3829-1122', website: 'ufla.br', courses: ['Bioquímica', 'Farmácia', 'Biologia'], createdAt: 1700000000038 },
-  { id: 'rj-2', name: 'UFF', city: 'Niterói', state: 'RJ', type: 'Federal', phone: '(21) 2629-2540', website: 'uff.br', courses: ['Biomedicina', 'Farmácia', 'Biologia'], createdAt: 1700000000039 },
-  { id: 'sp-5', name: 'USP - FCFRP', city: 'Ribeirão Preto', state: 'SP', type: 'Estadual', phone: '(16) 3315-4200', website: 'fcfrp.usp.br', courses: ['Farmácia-Bioquímica', 'Biologia'], createdAt: 1700000000040 }
+
+  // ATUALIZAÇÃO 2026 - NOVAS INSTITUIÇÕES (PUCs e OUTRAS)
+  { 
+    id: 'puc-rj-2026', 
+    name: 'PUC-Rio', 
+    city: 'Rio de Janeiro', 
+    state: 'RJ', 
+    type: 'Privada (Comunitária)', 
+    phone: '(21) 3736-1001', 
+    website: 'puc-rio.br', 
+    courses: ['Medicina', 'Enfermagem', 'Nutrição', 'Biomedicina', 'Bioquímica'], 
+    createdAt: 1740000000000 
+  },
+  { 
+    id: 'puc-sp-2026', 
+    name: 'PUC-SP', 
+    city: 'São Paulo', 
+    state: 'SP', 
+    type: 'Privada (Comunitária)', 
+    phone: '(11) 3670-8011', 
+    website: 'pucsp.br', 
+    courses: ['Biomedicina', 'Ciências Biológicas', 'Nutrição', 'Enfermagem', 'Medicina', 'Bioquímica'], 
+    createdAt: 1740000000001 
+  },
+  { 
+    id: 'puc-mg-2026', 
+    name: 'PUC-Minas', 
+    city: 'Belo Horizonte', 
+    state: 'MG', 
+    type: 'Privada (Comunitária)', 
+    phone: '(31) 3319-4444', 
+    website: 'pucminas.br', 
+    courses: ['Medicina', 'Enfermagem', 'Biomedicina', 'Ciências Biológicas', 'Nutrição'], 
+    createdAt: 1740000000002 
+  },
+  { 
+    id: 'puc-pr-2026-cur', 
+    name: 'PUCPR - Curitiba', 
+    city: 'Curitiba', 
+    state: 'PR', 
+    type: 'Privada (Comunitária)', 
+    phone: '(41) 3271-1515', 
+    website: 'pucpr.br', 
+    courses: ['Biotecnologia', 'Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição'], 
+    createdAt: 1740000000003 
+  },
+  { 
+    id: 'puc-pr-2026-lon', 
+    name: 'PUCPR - Londrina', 
+    city: 'Londrina', 
+    state: 'PR', 
+    type: 'Privada (Comunitária)', 
+    phone: '(43) 3372-6000', 
+    website: 'pucpr.br', 
+    courses: ['Biotecnologia', 'Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição'], 
+    createdAt: 1740000000004 
+  },
+  { 
+    id: 'puc-pr-2026-mar', 
+    name: 'PUCPR - Maringá', 
+    city: 'Maringá', 
+    state: 'PR', 
+    type: 'Privada (Comunitária)', 
+    phone: '(44) 3025-8701', 
+    website: 'pucpr.br', 
+    courses: ['Biotecnologia', 'Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição'], 
+    createdAt: 1740000000005 
+  },
+  { 
+    id: 'puc-pr-2026-tol', 
+    name: 'PUCPR - Toledo', 
+    city: 'Toledo', 
+    state: 'PR', 
+    type: 'Privada (Comunitária)', 
+    phone: '(45) 3277-8600', 
+    website: 'pucpr.br', 
+    courses: ['Biotecnologia', 'Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição'], 
+    createdAt: 1740000000006 
+  },
+  { 
+    id: 'puc-camp-2026', 
+    name: 'PUC-Campinas', 
+    city: 'Campinas', 
+    state: 'SP', 
+    type: 'Privada (Comunitária)', 
+    phone: '(19) 3343-7000', 
+    website: 'puc-campinas.edu.br', 
+    courses: ['Medicina', 'Enfermagem', 'Farmácia', 'Nutrição', 'Biologia', 'Biomedicina'], 
+    createdAt: 1740000000007 
+  },
+  { 
+    id: 'puc-go-2026', 
+    name: 'PUC-Goiás', 
+    city: 'Goiânia', 
+    state: 'GO', 
+    type: 'Privada (Comunitária)', 
+    phone: '(62) 3946-1000', 
+    website: 'pucgoias.edu.br', 
+    courses: ['Medicina', 'Biomedicina', 'Enfermagem', 'Nutrição', 'Farmácia'], 
+    createdAt: 1740000000008 
+  },
+  { 
+    id: 'puc-rs-2026', 
+    name: 'PUCRS', 
+    city: 'Porto Alegre', 
+    state: 'RS', 
+    type: 'Privada (Comunitária)', 
+    phone: '(51) 3320-3500', 
+    website: 'pucrs.br', 
+    courses: ['Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição', 'Odontologia'], 
+    createdAt: 1740000000009 
+  },
+  { 
+    id: 'sao-camilo-2026', 
+    name: 'Centro Universitário São Camilo', 
+    city: 'São Paulo', 
+    state: 'SP', 
+    type: 'Privada', 
+    phone: '(11) 2588-4000', 
+    website: 'saocamilo-sp.br', 
+    courses: ['Biomedicina', 'Ciências Biológicas', 'Enfermagem', 'Farmácia', 'Nutrição', 'Medicina'], 
+    createdAt: 1740000000010 
+  }
 ];
