@@ -5,12 +5,15 @@ import { INITIAL_COLLEGES } from './data';
 import PremiumHeader from './components/PremiumHeader';
 import CollegeCard from './components/CollegeCard';
 import AddCollegeModal from './components/AddCollegeModal';
+import LoadingScreen from './components/LoadingScreen';
 
 const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   // Persistência robusta
   const [colleges, setColleges] = useState<College[]>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_repo_v4');
+      const saved = localStorage.getItem('bioquimica_repo_v5');
       let savedColleges: College[] = saved ? JSON.parse(saved) : [];
       const registry = new Map<string, College>();
       INITIAL_COLLEGES.forEach(c => registry.set(`${c.name.toLowerCase().trim()}|${c.city.toLowerCase().trim()}`, c));
@@ -23,7 +26,7 @@ const App: React.FC = () => {
 
   const [checkedIds, setCheckedIds] = useState<Set<string>>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_checked_v4');
+      const saved = localStorage.getItem('bioquimica_checked_v5');
       return saved ? new Set(JSON.parse(saved)) : new Set();
     } catch (e) {
       return new Set();
@@ -38,12 +41,20 @@ const App: React.FC = () => {
   const [showSync, setShowSync] = useState(false);
   const [syncKey, setSyncKey] = useState('');
 
+  // Simulação de carregamento para efeito visual premium
   useEffect(() => {
-    localStorage.setItem('bioquimica_repo_v4', JSON.stringify(colleges));
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('bioquimica_repo_v5', JSON.stringify(colleges));
   }, [colleges]);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_checked_v4', JSON.stringify(Array.from(checkedIds)));
+    localStorage.setItem('bioquimica_checked_v5', JSON.stringify(Array.from(checkedIds)));
   }, [checkedIds]);
 
   const uniqueStates = useMemo(() => {
@@ -97,7 +108,7 @@ const App: React.FC = () => {
     const data = JSON.stringify(Array.from(checkedIds));
     const encoded = btoa(data);
     navigator.clipboard.writeText(encoded);
-    alert('Chave de Sincronização copiada para a área de transferência!');
+    alert('Chave de Sincronização copiada!');
   };
 
   const handleImportProgress = () => {
@@ -106,15 +117,19 @@ const App: React.FC = () => {
       const importedIds = JSON.parse(decoded);
       if (Array.isArray(importedIds)) {
         setCheckedIds(new Set(importedIds));
-        alert('Progresso restaurado com sucesso!');
+        alert('Progresso restaurado!');
         setShowSync(false);
         setSyncKey('');
       }
-    } catch (e) { alert('Chave de sincronização inválida.'); }
+    } catch (e) { alert('Chave inválida.'); }
   };
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <div className="min-h-screen flex flex-col selection:bg-teal-200 selection:text-teal-900 bg-[#F8FAFA]">
+    <div className="min-h-screen flex flex-col selection:bg-teal-200 selection:text-teal-900 bg-[#F8FAFA] animate-in fade-in duration-1000">
       <PremiumHeader 
         searchQuery={searchQuery} 
         setSearchQuery={setSearchQuery} 
@@ -322,7 +337,7 @@ const App: React.FC = () => {
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm"><i className="fas fa-database"></i></div>
                     <div>
                       <p className="text-[9px] font-black text-teal-950 uppercase">Versão do DB</p>
-                      <p className="text-[11px] font-bold text-teal-600">v4.2.0 Stable</p>
+                      <p className="text-[11px] font-bold text-teal-600">v5.0.0 Premium</p>
                     </div>
                  </div>
                  <button onClick={() => setShowSync(true)} className="w-full py-4 bg-teal-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-teal-950/20 hover:bg-teal-900 transition-all active:scale-95">
