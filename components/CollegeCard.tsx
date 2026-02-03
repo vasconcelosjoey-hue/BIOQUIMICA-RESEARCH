@@ -9,6 +9,9 @@ interface CollegeCardProps {
 }
 
 const CollegeCard: React.FC<CollegeCardProps> = ({ college, isChecked, onToggleCheck }) => {
+  // Gera URL de busca no Google Maps
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${college.name} ${college.address} ${college.city} ${college.state}`)}`;
+
   return (
     <div className={`group glass-card rounded-[2rem] p-5 md:p-6 transition-all duration-500 flex flex-col h-full border-2 ${
       isChecked 
@@ -43,16 +46,29 @@ const CollegeCard: React.FC<CollegeCardProps> = ({ college, isChecked, onToggleC
         </div>
 
         <div className="space-y-3 mb-6">
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-3 group/loc">
             <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-teal-600 border border-teal-100 shadow-sm shrink-0">
               <i className="fas fa-location-dot text-[10px]"></i>
             </div>
-            <div className="min-w-0 pt-1">
-              <p className="text-[8px] font-black text-teal-800/40 uppercase tracking-widest mb-0.5">Localização</p>
+            <div className="min-w-0 pt-1 flex-1">
+              <p className="text-[8px] font-black text-teal-800/40 uppercase tracking-widest mb-0.5">Localização e Endereço</p>
               <p className="text-xs md:text-sm font-bold text-teal-900 leading-tight">
                 {college.city}, {college.state}
               </p>
+              <p className="text-[10px] md:text-xs text-teal-600/80 font-medium leading-tight mt-1">
+                {college.address}
+              </p>
             </div>
+            {/* Botão de Maps */}
+            <a 
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center hover:bg-teal-600 hover:text-white transition-all shadow-sm border border-teal-100 shrink-0 mt-2"
+              title="Abrir no Google Maps"
+            >
+              <i className="fas fa-map-marked-alt text-[10px]"></i>
+            </a>
           </div>
 
           {college.phone && (

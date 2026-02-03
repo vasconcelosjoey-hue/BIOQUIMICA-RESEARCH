@@ -4,6 +4,7 @@ export interface College {
   name: string;
   city: string;
   state: string;
+  address: string; // Novo campo obrigatório
   type: string;
   phone: string;
   website: string;
