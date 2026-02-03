@@ -3,7 +3,7 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>BIOQUIMICA RESEARCH | Diretório Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -17,15 +17,17 @@
 
       body {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        background-color: #f0f4f4;
+        background-color: #f8fafa;
         color: #1a2e2c;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
       }
 
       .glass-card {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(13, 148, 136, 0.1);
       }
 
       .custom-scrollbar::-webkit-scrollbar {
@@ -47,6 +49,19 @@
         0% { transform: scale(1); }
         50% { transform: scale(1.05); }
         100% { transform: scale(1); }
+      }
+
+      /* Garante que o texto não quebre layouts */
+      .word-break-all {
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
+
+      /* Ajuste para inputs no mobile para evitar zoom automático no iOS */
+      @media screen and (max-width: 768px) {
+        input, select, textarea {
+          font-size: 16px !important;
+        }
       }
     </style>
   <script type="importmap">
