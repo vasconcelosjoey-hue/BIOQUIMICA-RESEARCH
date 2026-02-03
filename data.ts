@@ -2,12 +2,134 @@
 import { College } from './types';
 
 export const INITIAL_COLLEGES: College[] = [
-  // --- POLOS DE BIOQUÍMICA ESPECÍFICA ---
+  // --- POLOS DE BIOQUÍMICA ESPECÍFICA (EXISTENTES) ---
   { id: 'ufv-bq-1', name: 'Universidade Federal de Viçosa (UFV)', city: 'Viçosa', state: 'MG', address: 'Avenida Peter Henry Rolfs, s/n - Campus Universitário', type: 'Federal', phone: '(31) 3612-5103', website: 'www.dbq.ufv.br', courses: ['Bioquímica', 'Ciências Biológicas'], createdAt: 1740000000001 },
   { id: 'ufsj-bq-1', name: 'Univ. Federal de São João del-Rei (UFSJ)', city: 'Divinópolis', state: 'MG', address: 'Rua Sebastião Gonçalves Coelho, 400 - Itanhangá', type: 'Federal', phone: '(37) 3221-1164', website: 'www.ufsj.edu.br/bioquimica', courses: ['Bioquímica', 'Farmácia', 'Medicina'], createdAt: 1740000000002 },
   { id: 'uem-bq-1', name: 'Universidade Estadual de Maringá (UEM)', city: 'Maringá', state: 'PR', address: 'Av. Colombo, 5790 - Jardim Universitário', type: 'Estadual', phone: '(44) 3011-4312', website: 'www.dbq.uem.br', courses: ['Bioquímica', 'Farmácia', 'Ciências Biológicas'], createdAt: 1740000000003 },
 
-  // --- REGIÃO NORTE ---
+  // --- RIO GRANDE DO NORTE (RN) - NOVOS REGISTROS DO RELATÓRIO ---
+  { 
+    id: 'rn-ufrn-1', 
+    name: 'UFRN (Univ. Federal do RN)', 
+    city: 'Natal', 
+    state: 'RN', 
+    address: 'Campus Universitário, Lagoa Nova, Natal - RN, CEP: 59078-970', 
+    type: 'Federal', 
+    phone: '(84) 3215-3416', 
+    website: 'ufrn.br', 
+    courses: ['Bioquímica', 'Biomedicina', 'Farmácia'], 
+    createdAt: 1740000000100 
+  },
+  { 
+    id: 'rn-unirn-1', 
+    name: 'UNI-RN', 
+    city: 'Natal', 
+    state: 'RN', 
+    address: 'Rua Prefeito Jundiaí, 546, Tirol, Natal - RN, CEP: 59020-120', 
+    type: 'Privada', 
+    phone: '(84) 3215-2917', 
+    website: 'unirn.edu.br', 
+    courses: ['Biomedicina', 'Farmácia'], 
+    createdAt: 1740000000101 
+  },
+  { 
+    id: 'rn-unp-1', 
+    name: 'UnP (Univ. Potiguar)', 
+    city: 'Natal', 
+    state: 'RN', 
+    address: 'Av. Eng. Roberto Freire, 2184, Capim Macio, Natal - RN, CEP: 59082-902', 
+    type: 'Privada', 
+    phone: '(84) 3227-1234', 
+    website: 'unp.br', 
+    courses: ['Biomedicina', 'Farmácia'], 
+    createdAt: 1740000000102 
+  },
+  { 
+    id: 'rn-ufersa-1', 
+    name: 'UFERSA (Univ. Fed. Rural do Semi-Árido)', 
+    city: 'Mossoró', 
+    state: 'RN', 
+    address: 'Av. Francisco Mota, 572, Costa e Silva, Mossoró - RN, CEP: 59625-900', 
+    type: 'Federal', 
+    phone: '(84) 3317-8224', 
+    website: 'ufersa.edu.br', 
+    courses: ['Biotecnologia', 'Medicina'], 
+    createdAt: 1740000000103 
+  },
+  { 
+    id: 'rn-uern-1', 
+    name: 'UERN (Univ. do Estado do RN)', 
+    city: 'Mossoró', 
+    state: 'RN', 
+    address: 'Rua Almino Afonso, 478, Centro, Mossoró - RN, CEP: 59610-210', 
+    type: 'Estadual', 
+    phone: '(84) 3315-2248', 
+    website: 'portal.uern.br', 
+    courses: ['Medicina', 'Enfermagem'], 
+    createdAt: 1740000000104 
+  },
+  { 
+    id: 'rn-facene-1', 
+    name: 'FACENE/RN', 
+    city: 'Mossoró', 
+    state: 'RN', 
+    address: 'Av. Presidente Dutra, 701, Alto de São Manoel, Mossoró - RN, CEP: 59628-000', 
+    type: 'Privada', 
+    phone: '(84) 3312-0143', 
+    website: 'facenemossoro.com.br', 
+    courses: ['Biomedicina', 'Farmácia'], 
+    createdAt: 1740000000105 
+  },
+  { 
+    id: 'rn-uern-caico', 
+    name: 'UERN (Campus Caicó)', 
+    city: 'Caicó', 
+    state: 'RN', 
+    address: 'Av. Rio Branco, 725, Centro, Caicó - RN, CEP: 59300-000', 
+    type: 'Estadual', 
+    phone: '(84) 3421-6513', 
+    website: 'caico.uern.br', 
+    courses: ['Odontologia', 'Enfermagem'], 
+    createdAt: 1740000000106 
+  },
+  { 
+    id: 'rn-ufrn-facisa', 
+    name: 'UFRN (FACISA)', 
+    city: 'Santa Cruz', 
+    state: 'RN', 
+    address: 'Rua Trairi, s/n, Centro, Santa Cruz - RN, CEP: 59200-000', 
+    type: 'Federal', 
+    phone: '(84) 3291-2411', 
+    website: 'facisa.ufrn.br', 
+    courses: ['Nutrição', 'Fisioterapia'], 
+    createdAt: 1740000000107 
+  },
+  { 
+    id: 'rn-uern-pauferros', 
+    name: 'UERN (Campus Pau dos Ferros)', 
+    city: 'Pau dos Ferros', 
+    state: 'RN', 
+    address: 'BR 405, KM 153, Pau dos Ferros - RN, CEP: 59900-000', 
+    type: 'Estadual', 
+    phone: '(84) 3351-2560', 
+    website: 'pferros.uern.br', 
+    courses: ['Enfermagem', 'Biologia'], 
+    createdAt: 1740000000108 
+  },
+  { 
+    id: 'rn-unp-pauferros', 
+    name: 'UnP (Polo Pau dos Ferros)', 
+    city: 'Pau dos Ferros', 
+    state: 'RN', 
+    address: 'Rua Paulo Marcelino, 489, Centro, Pau dos Ferros - RN, CEP: 59900-000', 
+    type: 'Privada', 
+    phone: '(83) 98216-9192', 
+    website: 'unp.br', 
+    courses: ['Nutrição', 'Enfermagem'], 
+    createdAt: 1740000000109 
+  },
+
+  // --- RESTANTE DA REGIÃO NORTE (MANTIDOS) ---
   { id: 'am-1', name: 'Universidade Federal do Amazonas (UFAM)', city: 'Manaus', state: 'AM', address: 'Av. Rodrigo Otávio, 6200 - Coroado', type: 'Federal', phone: '(92) 3305-1181', website: 'www.ufam.edu.br', courses: ['Medicina', 'Farmácia', 'Bioquímica'], createdAt: 1740000000004 },
   { id: 'am-2', name: 'Universidade do Estado do Amazonas (UEA)', city: 'Manaus', state: 'AM', address: 'Av. Djalma Batista, 3578 - Flores', type: 'Estadual', phone: '(92) 3878-4450', website: 'www.uea.edu.br', courses: ['Medicina', 'Enfermagem'], createdAt: 1740000000005 },
   { id: 'am-3', name: 'FAMETRO', city: 'Manaus', state: 'AM', address: 'Av. Constantino Nery, 3000 - Chapada', type: 'Privada', phone: '(92) 2101-1000', website: 'www.fametro.edu.br', courses: ['Bioquímica', 'Nutrição'], createdAt: 1740000000006 },
@@ -26,7 +148,7 @@ export const INITIAL_COLLEGES: College[] = [
   { id: 'ro-1', name: 'Universidade Federal de Rondônia (UNIR)', city: 'Porto Velho', state: 'RO', address: 'BR-364, KM 9,5 - Sentido Acre', type: 'Federal', phone: '(69) 2182-2100', website: 'www.unir.br', courses: ['Biologia', 'Saúde'], createdAt: 1740000000021 },
   { id: 'to-1', name: 'Universidade Federal de Tocantins (UFT)', city: 'Palmas', state: 'TO', address: 'Av. NS 15, s/n - 109 Norte', type: 'Federal', phone: '(63) 3229-4000', website: 'www.uft.edu.br', courses: ['Nutrição', 'Medicina'], createdAt: 1740000000023 },
 
-  // --- REGIÃO SUDESTE ---
+  // --- REGIÃO SUDESTE (MANTIDOS) ---
   { id: 'sp-1', name: 'Universidade de São Paulo (USP)', city: 'São Paulo', state: 'SP', address: 'Rua do Matão, s/n - Cidade Universitária', type: 'Estadual', phone: '(11) 3091-3100', website: 'www.usp.br', courses: ['Bioquímica', 'Medicina'], createdAt: 1740000000045 },
   { id: 'sp-4', name: 'Fac. Albert Einstein (FICSAE)', city: 'São Paulo', state: 'SP', address: 'Av. Albert Einstein, 627 - Morumbi', type: 'Privada', phone: '(11) 2151-1001', website: 'ensino.einstein.br', courses: ['Medicina', 'Enfermagem'], createdAt: 1740000000048 },
   { id: 'mg-1', name: 'Univ. Fed. Minas Gerais (UFMG)', city: 'Belo Horizonte', state: 'MG', address: 'Av. Pres. Antônio Carlos, 6627 - Pampulha', type: 'Federal', phone: '(31) 3409-5000', website: 'www.ufmg.br', courses: ['Bioquímica', 'Medicina'], createdAt: 1740000000053 },
