@@ -7,11 +7,23 @@ import CollegeCard from './components/CollegeCard';
 import AddCollegeModal from './components/AddCollegeModal';
 
 const App: React.FC = () => {
-  // Persistence
+  // Persistence with Sync Logic
   const [colleges, setColleges] = useState<College[]>(() => {
     try {
       const saved = localStorage.getItem('bioquimica_repo_v2');
-      return saved ? JSON.parse(saved) : INITIAL_COLLEGES;
+      const savedColleges: College[] = saved ? JSON.parse(saved) : [];
+      
+      // Merge: Add items from INITIAL_COLLEGES if they don't exist in savedColleges (by Name + City)
+      const merged = [...savedColleges];
+      INITIAL_COLLEGES.forEach(initial => {
+        const exists = merged.some(m => 
+          m.name.toLowerCase().trim() === initial.name.toLowerCase().trim() &&
+          m.city.toLowerCase().trim() === initial.city.toLowerCase().trim()
+        );
+        if (!exists) merged.push(initial);
+      });
+
+      return merged.length > 0 ? merged : INITIAL_COLLEGES;
     } catch (e) {
       return INITIAL_COLLEGES;
     }
@@ -108,7 +120,7 @@ const App: React.FC = () => {
               Diretório <span className="text-teal-600">Bioquímica</span>
             </h2>
             <p className="text-lg text-teal-900/60 font-medium max-w-xl leading-relaxed">
-              Base de dados nacional para mapeamento de cursos e instituições. Monitore seu progresso de pesquisa marcando as instituições já analisadas.
+              Base de dados nacional consolidada para mapeamento de cursos e instituições de saúde.
             </p>
           </div>
 
@@ -131,11 +143,11 @@ const App: React.FC = () => {
           <div className="flex gap-3">
              <div className="px-4 py-2 bg-white border border-teal-100 rounded-2xl flex items-center gap-2 shadow-sm">
                 <i className="fas fa-database text-teal-600 text-xs"></i>
-                <span className="text-xs font-bold text-teal-900">{stats.total} Totais</span>
+                <span className="text-xs font-bold text-teal-900">{stats.total} Instituições</span>
              </div>
              <div className="px-4 py-2 bg-teal-50 border border-teal-200 rounded-2xl flex items-center gap-2 shadow-sm">
                 <i className="fas fa-check-circle text-teal-600 text-xs"></i>
-                <span className="text-xs font-bold text-teal-900">{stats.checked} Vistas</span>
+                <span className="text-xs font-bold text-teal-900">{stats.checked} Analisadas</span>
              </div>
           </div>
           
@@ -144,7 +156,7 @@ const App: React.FC = () => {
             className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-teal-600 text-white font-black rounded-2xl hover:bg-teal-700 shadow-2xl shadow-teal-500/20 transition-all transform hover:scale-[1.02] active:scale-95 group"
           >
             <i className="fas fa-plus-circle group-hover:rotate-90 transition-transform"></i>
-            ADICIONAR FACULDADE
+            CADASTRAR NOVA
           </button>
         </div>
 
@@ -163,11 +175,11 @@ const App: React.FC = () => {
         ) : (
           <div className="py-24 flex flex-col items-center justify-center text-center space-y-4">
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-teal-200 border border-dashed border-teal-200">
-              <i className="fas fa-flask text-4xl"></i>
+              <i className="fas fa-microscope text-4xl"></i>
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-teal-900">Nenhuma amostra encontrada</h3>
-              <p className="text-teal-600/60 max-w-sm mx-auto">Sua busca não retornou resultados no diretório atual. Refine os filtros ou adicione uma nova entrada.</p>
+              <h3 className="text-2xl font-bold text-teal-900">Nenhum resultado</h3>
+              <p className="text-teal-600/60 max-w-sm mx-auto">Tente buscar por termos diferentes ou adicione uma nova faculdade ao repositório.</p>
             </div>
           </div>
         )}
@@ -181,20 +193,17 @@ const App: React.FC = () => {
               <i className="fas fa-dna text-teal-400 text-xl"></i>
               <span className="text-lg font-black tracking-tighter">BIOQUIMICA RESEARCH</span>
             </div>
-            <p className="text-teal-400/50 text-xs font-bold uppercase tracking-widest">Tecnologia em Gestão da Informação Acadêmica</p>
+            <p className="text-teal-400/50 text-xs font-bold uppercase tracking-widest">Base Nacional de Informação Acadêmica</p>
           </div>
           
           <div className="text-center md:text-right space-y-1">
-            <p className="text-sm font-medium opacity-60 italic">&copy; {new Date().getFullYear()} - Sistema Premium de Monitoramento</p>
+            <p className="text-sm font-medium opacity-60 italic">&copy; {new Date().getFullYear()} - Sistema Premium</p>
             <div className="flex justify-center md:justify-end gap-3 mt-4">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-all hover:scale-110 shadow-lg shadow-black/20" title="GitHub Repository">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-all hover:scale-110 shadow-lg shadow-black/20">
                 <i className="fab fa-github text-lg"></i>
               </a>
-              <a href="#" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-all hover:scale-110 shadow-lg shadow-black/20" title="LinkedIn">
+              <a href="#" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-all hover:scale-110 shadow-lg shadow-black/20">
                 <i className="fab fa-linkedin-in text-lg"></i>
-              </a>
-              <a href="#" className="w-10 h-10 bg-teal-900 rounded-xl flex items-center justify-center hover:bg-teal-800 transition-all hover:scale-110 shadow-lg shadow-black/20" title="Instagram">
-                <i className="fab fa-instagram text-lg"></i>
               </a>
             </div>
           </div>
