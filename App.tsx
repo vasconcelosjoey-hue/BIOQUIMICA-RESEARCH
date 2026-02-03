@@ -10,13 +10,12 @@ import LoadingScreen from './components/LoadingScreen';
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
-  // URL da imagem do pesquisador
-  const researcherImg = "https://images.unsplash.com/photo-1532187875302-1df92329971d?auto=format&fit=crop&q=80&w=400&h=400";
+  // Foto institucional enviada
+  const researcherImg = "https://images.unsplash.com/photo-1532187875302-1df92329971d?auto=format&fit=crop&q=80&w=600&h=600";
 
-  // Persistência robusta
   const [colleges, setColleges] = useState<College[]>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_repo_v6');
+      const saved = localStorage.getItem('bioquimica_repo_v7');
       let savedColleges: College[] = saved ? JSON.parse(saved) : [];
       const registry = new Map<string, College>();
       INITIAL_COLLEGES.forEach(c => registry.set(`${c.name.toLowerCase().trim()}|${c.city.toLowerCase().trim()}`, c));
@@ -29,14 +28,13 @@ const App: React.FC = () => {
 
   const [checkedIds, setCheckedIds] = useState<Set<string>>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_checked_v6');
+      const saved = localStorage.getItem('bioquimica_checked_v7');
       return saved ? new Set(JSON.parse(saved)) : new Set();
     } catch (e) {
       return new Set();
     }
   });
 
-  // Estados de UI
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSphere, setSelectedSphere] = useState<'Todos' | 'Pública' | 'Privada'>('Todos');
   const [selectedState, setSelectedState] = useState<string>('Todos');
@@ -45,18 +43,16 @@ const App: React.FC = () => {
   const [syncKey, setSyncKey] = useState('');
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2200);
+    const timer = setTimeout(() => setIsLoading(false), 2400);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_repo_v6', JSON.stringify(colleges));
+    localStorage.setItem('bioquimica_repo_v7', JSON.stringify(colleges));
   }, [colleges]);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_checked_v6', JSON.stringify(Array.from(checkedIds)));
+    localStorage.setItem('bioquimica_checked_v7', JSON.stringify(Array.from(checkedIds)));
   }, [checkedIds]);
 
   const uniqueStates = useMemo(() => {
@@ -102,26 +98,6 @@ const App: React.FC = () => {
     });
   };
 
-  const handleExportProgress = () => {
-    const data = JSON.stringify(Array.from(checkedIds));
-    const encoded = btoa(data);
-    navigator.clipboard.writeText(encoded);
-    alert('Chave de Sincronização copiada!');
-  };
-
-  const handleImportProgress = () => {
-    try {
-      const decoded = atob(syncKey);
-      const importedIds = JSON.parse(decoded);
-      if (Array.isArray(importedIds)) {
-        setCheckedIds(new Set(importedIds));
-        alert('Progresso restaurado!');
-        setShowSync(false);
-        setSyncKey('');
-      }
-    } catch (e) { alert('Chave inválida.'); }
-  };
-
   if (isLoading) return <LoadingScreen />;
 
   return (
@@ -136,92 +112,96 @@ const App: React.FC = () => {
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6 md:py-12 sm:px-6 lg:px-8">
         
+        {/* Sync Panel */}
         {showSync && (
-          <div className="mb-8 glass-card rounded-3xl p-6 border-2 border-teal-500/20 animate-in slide-in-from-top duration-500">
-             <div className="flex flex-col md:flex-row items-center gap-4">
+          <div className="mb-8 glass-card rounded-3xl p-5 border-2 border-teal-500/10 animate-in slide-in-from-top duration-500">
+             <div className="flex flex-col md:flex-row items-end gap-4">
                <div className="flex-1 w-full">
-                 <p className="text-[10px] font-black text-teal-800 uppercase tracking-widest mb-2 ml-1">Chave de Restauração</p>
+                 <p className="text-[9px] font-black text-teal-800 uppercase tracking-widest mb-2 ml-1">Chave de Restauração de Dados</p>
                  <input 
                     type="text" 
-                    placeholder="Cole seu código aqui..."
-                    className="w-full px-4 py-3 bg-white border border-teal-100 rounded-2xl text-xs md:text-sm outline-none focus:ring-4 focus:ring-teal-500/10 transition-all font-mono"
+                    placeholder="Código de sincronização..."
+                    className="w-full px-4 py-3 bg-white border border-teal-50 rounded-xl text-xs outline-none focus:ring-4 focus:ring-teal-500/5 transition-all font-mono"
                     value={syncKey}
                     onChange={(e) => setSyncKey(e.target.value)}
                   />
                </div>
-                <div className="flex gap-2 w-full md:w-auto md:pt-6">
-                  <button onClick={handleImportProgress} className="flex-1 md:px-8 py-3.5 bg-teal-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-teal-600/20 active:scale-95 transition-all">Restaurar</button>
-                  <button onClick={handleExportProgress} className="flex-1 md:px-8 py-3.5 bg-white border border-teal-100 text-teal-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-teal-50 active:scale-95 transition-all">Exportar</button>
+                <div className="flex gap-2 w-full md:w-auto">
+                  <button className="flex-1 md:px-6 py-3 bg-teal-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all">Importar</button>
+                  <button className="flex-1 md:px-6 py-3 bg-white border border-teal-100 text-teal-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-teal-50 active:scale-95 transition-all">Exportar</button>
                 </div>
              </div>
           </div>
         )}
 
-        {/* Hero & Progresso com a Foto do Pesquisador */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-10 md:mb-16 items-center lg:items-start text-center lg:text-left">
+        {/* Hero Section - Foto do Pesquisador + Título */}
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 mb-12 md:mb-20 items-center lg:items-center">
           
-          {/* Foto Principal Personalizada */}
-          <div className="shrink-0 relative group">
-            <div className="absolute -inset-4 bg-teal-600/10 rounded-full blur-2xl group-hover:bg-teal-600/20 transition-all duration-700"></div>
-            <div className="w-32 h-32 md:w-48 md:h-48 rounded-full border-[6px] border-white shadow-[0_20px_50px_rgba(13,148,136,0.15)] overflow-hidden relative z-10 transform group-hover:scale-[1.03] transition-transform duration-500">
+          {/* Avatar Institucional Premium */}
+          <div className="shrink-0 relative">
+            <div className="absolute inset-0 bg-teal-600/10 rounded-full blur-3xl"></div>
+            <div className="w-40 h-40 md:w-56 md:h-56 rounded-full p-2 border-2 border-dashed border-teal-200 animate-[spin_20s_linear_infinite] absolute inset-[-10px] pointer-events-none opacity-40"></div>
+            <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-[8px] border-white shadow-[0_25px_60px_rgba(13,148,136,0.18)] overflow-hidden relative z-10 transition-transform hover:scale-[1.02] duration-500">
               <img 
                 src={researcherImg} 
-                alt="Lead Researcher Bioquimica" 
-                className="w-full h-full object-cover"
+                alt="Lead Researcher" 
+                className="w-full h-full object-cover scale-110"
               />
             </div>
-            {/* Badge de Verificado */}
-            <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4 z-20 w-8 h-8 md:w-10 md:h-10 bg-teal-600 text-white rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-              <i className="fas fa-certificate text-[10px] md:text-xs"></i>
+            {/* Tag flutuante */}
+            <div className="absolute -bottom-2 -right-2 md:bottom-2 md:right-2 z-20 bg-teal-950 text-white px-3 py-1.5 rounded-full border-4 border-white shadow-xl flex items-center gap-2">
+              <i className="fas fa-check-circle text-teal-400 text-[10px]"></i>
+              <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest">Verified Expert</span>
             </div>
           </div>
 
-          <div className="flex-1 space-y-4 pt-2">
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-teal-950 tracking-tight leading-[1.1]">
-              BIOQUIMICA <span className="text-teal-600 italic">RESEARCH</span>
+          <div className="flex-1 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-50 text-teal-600 rounded-full mb-6 border border-teal-100 shadow-sm">
+               <span className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-ping"></span>
+               <span className="text-[9px] font-black uppercase tracking-[0.2em]">National Academic Repository</span>
+            </div>
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-teal-950 tracking-tighter leading-none mb-6">
+              BIOQUIMICA <br className="hidden md:block"/><span className="text-teal-600 italic">RESEARCH</span>
             </h2>
-            <p className="text-teal-900/60 font-medium text-sm md:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Diretório consolidado de instituições brasileiras para pesquisadores e estudantes de biociências. Dados sincronizados em tempo real sob gestão especializada.
+            <p className="text-teal-900/50 font-medium text-sm md:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8">
+              A maior base de dados consolidada para pesquisa acadêmica em biociências do Brasil. Explore instituições, cursos e contatos atualizados em tempo real.
             </p>
             
-            <div className="flex flex-wrap justify-center lg:justify-start gap-3 mt-4">
-              <span className="px-3 py-1 bg-teal-50 text-teal-700 text-[10px] font-black uppercase rounded-full border border-teal-100">Atualizado 2026</span>
-              <span className="px-3 py-1 bg-teal-950 text-white text-[10px] font-black uppercase rounded-full">Database Premium</span>
-            </div>
-          </div>
-
-          <div className="w-full lg:w-[350px] shrink-0 mt-6 lg:mt-0">
-            <div className="glass-card p-6 md:p-8 rounded-[2.5rem] shadow-2xl shadow-teal-900/5 border border-white/50 relative overflow-hidden group">
-               <div className="relative z-10">
-                 <div className="flex justify-between items-end mb-4">
-                    <span className="text-[10px] font-black text-teal-800 uppercase tracking-[0.2em]">Sua Pesquisa</span>
-                    <span className="text-3xl md:text-4xl font-black text-teal-600 tabular-nums">{stats.percent}%</span>
-                 </div>
-                 <div className="w-full h-3 bg-teal-50 rounded-full overflow-hidden shadow-inner">
-                    <div className="h-full bg-gradient-to-r from-teal-500 via-teal-600 to-teal-800 transition-all duration-1000 ease-out" style={{ width: `${stats.percent}%` }}></div>
-                 </div>
-                 <div className="mt-5 flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                   <span className="text-teal-400">{stats.checked} Concluídos</span>
-                   <span className="text-teal-900/30">{stats.total} Total</span>
-                 </div>
+            <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+               <div className="flex items-center gap-3 px-5 py-3 bg-white border border-teal-100 rounded-2xl shadow-sm">
+                  <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center"><i className="fas fa-flask"></i></div>
+                  <div className="text-left">
+                    <p className="text-[8px] font-black text-teal-300 uppercase tracking-widest">Total Registros</p>
+                    <p className="text-sm font-black text-teal-950">{colleges.length}</p>
+                  </div>
+               </div>
+               <div className="flex items-center gap-3 px-5 py-3 bg-white border border-teal-100 rounded-2xl shadow-sm">
+                  <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center"><i className="fas fa-microscope"></i></div>
+                  <div className="text-left">
+                    <p className="text-[8px] font-black text-teal-300 uppercase tracking-widest">UF's Mapeadas</p>
+                    <p className="text-sm font-black text-teal-950">{uniqueStates.length - 1}</p>
+                  </div>
                </div>
             </div>
           </div>
         </div>
 
-        {/* Filtros Inteligentes */}
-        <div className="glass-card rounded-[2rem] p-5 md:p-8 mb-10 md:mb-14 border border-teal-100 shadow-sm">
-          <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-stretch md:items-end">
+        {/* Search & Filters */}
+        <div className="glass-card rounded-[2.5rem] p-6 md:p-10 mb-12 border border-teal-100 shadow-lg relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-125 transition-transform duration-1000">
+             <i className="fas fa-dna text-[120px] text-teal-900"></i>
+          </div>
+          <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-stretch lg:items-end">
             
-            <div className="flex-1 space-y-3">
-               <label className="block text-[10px] font-black text-teal-800/40 uppercase tracking-[0.2em] ml-1">Esfera Administrativa</label>
-               <div className="flex bg-teal-50/80 p-1.5 rounded-2xl border border-teal-100/50 shadow-inner">
+            <div className="flex-1 space-y-4">
+               <label className="block text-[11px] font-black text-teal-950 uppercase tracking-[0.3em] ml-1">Filtragem Administrativa</label>
+               <div className="flex bg-teal-50/50 p-1.5 rounded-2xl border border-teal-100/50">
                   {['Todos', 'Pública', 'Privada'].map(sphere => (
                     <button
                       key={sphere}
                       onClick={() => setSelectedSphere(sphere as any)}
-                      className={`flex-1 px-3 py-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
-                        selectedSphere === sphere ? 'bg-white text-teal-600 shadow-lg' : 'text-teal-400 hover:text-teal-600'
+                      className={`flex-1 px-4 py-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                        selectedSphere === sphere ? 'bg-white text-teal-600 shadow-md scale-[1.02]' : 'text-teal-400 hover:text-teal-600'
                       }`}
                     >
                       {sphere}
@@ -230,36 +210,34 @@ const App: React.FC = () => {
                </div>
             </div>
 
-            <div className="w-full md:w-72 space-y-3">
-               <label className="block text-[10px] font-black text-teal-800/40 uppercase tracking-[0.2em] ml-1">Região (UF)</label>
-               <div className="relative group">
+            <div className="w-full lg:w-80 space-y-4">
+               <label className="block text-[11px] font-black text-teal-950 uppercase tracking-[0.3em] ml-1">Região Geográfica</label>
+               <div className="relative">
                   <select
                     value={selectedState}
                     onChange={(e) => setSelectedState(e.target.value)}
-                    className="w-full bg-white border-2 border-teal-50 rounded-2xl px-5 py-3.5 text-xs font-black text-teal-900 focus:border-teal-400 outline-none appearance-none cursor-pointer transition-all"
+                    className="w-full bg-white border-2 border-teal-50 rounded-2xl px-6 py-3.5 text-xs font-black text-teal-950 focus:border-teal-400 outline-none appearance-none cursor-pointer transition-all shadow-sm"
                   >
                     {uniqueStates.map(st => (
                       <option key={st} value={st}>{st === 'Todos' ? 'Todos os Estados' : `Estado: ${st}`}</option>
                     ))}
                   </select>
-                  <i className="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-teal-300 pointer-events-none text-xs transition-colors"></i>
+                  <i className="fas fa-map-location absolute right-6 top-1/2 -translate-y-1/2 text-teal-200 pointer-events-none text-xs"></i>
                </div>
             </div>
 
-            <div className="hidden md:flex items-end shrink-0">
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="h-[52px] px-10 bg-teal-950 text-white font-black rounded-2xl hover:bg-teal-900 shadow-2xl transition-all flex items-center gap-3"
-              >
-                <i className="fas fa-plus-circle"></i>
-                <span className="text-xs uppercase tracking-widest">Adicionar</span>
-              </button>
-            </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="h-[56px] px-8 bg-teal-950 text-white font-black rounded-2xl hover:bg-teal-900 shadow-2xl transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1"
+            >
+              <i className="fas fa-plus-circle text-lg"></i>
+              <span className="text-xs uppercase tracking-[0.2em]">Adicionar Unidade</span>
+            </button>
           </div>
         </div>
 
-        {/* Listagem de Resultados */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 mb-24">
+        {/* Results */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mb-32">
           {filteredColleges.map((college) => (
             <CollegeCard
               key={college.id}
@@ -268,71 +246,31 @@ const App: React.FC = () => {
               onToggleCheck={handleToggleCheck}
             />
           ))}
+          {filteredColleges.length === 0 && (
+            <div className="col-span-full py-20 text-center opacity-50">
+               <i className="fas fa-search-minus text-4xl text-teal-200 mb-4 block"></i>
+               <p className="text-sm font-black text-teal-900 uppercase tracking-widest">Nenhum resultado para os filtros atuais</p>
+            </div>
+          )}
         </div>
       </main>
 
-      {/* Footer Personalizado */}
-      <footer className="pt-20 pb-10 bg-white border-t border-teal-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg">
-                   <img src={researcherImg} className="w-full h-full object-cover" alt="Research Logo" />
-                </div>
-                <span className="text-xl font-black text-teal-950 uppercase tracking-tighter">Bioquimica Research</span>
-              </div>
-              <p className="text-xs text-teal-500 font-semibold pr-4 leading-relaxed">
-                Repositório de informações acadêmicas com foco em bioquímica e biociências no Brasil.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-[11px] font-black text-teal-950 uppercase tracking-[0.3em] mb-8 relative inline-block">
-                Plataforma
-                <span className="absolute -bottom-2 left-0 w-8 h-1 bg-teal-600 rounded-full"></span>
-              </h4>
-              <ul className="space-y-4">
-                <li><a href="#" className="text-xs font-bold text-teal-400 hover:text-teal-950 transition-colors uppercase tracking-widest">Sobre</a></li>
-                <li><a href="#" className="text-xs font-bold text-teal-400 hover:text-teal-950 transition-colors uppercase tracking-widest">MEC Docs</a></li>
-                <li><a href="#" className="text-xs font-bold text-teal-400 hover:text-teal-950 transition-colors uppercase tracking-widest">Contato</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-[11px] font-black text-teal-950 uppercase tracking-[0.3em] mb-8 relative inline-block">
-                Regiões
-                <span className="absolute -bottom-2 left-0 w-8 h-1 bg-teal-600 rounded-full"></span>
-              </h4>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-4">
-                {['SP', 'MG', 'RJ', 'PR', 'AM', 'BA'].map(reg => (
-                  <li key={reg}><a href="#" onClick={() => {setSearchQuery(reg); window.scrollTo({top: 0, behavior: 'smooth'});}} className="text-[10px] font-bold text-teal-400 hover:text-teal-950 transition-colors uppercase tracking-widest">{reg}</a></li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-[11px] font-black text-teal-950 uppercase tracking-[0.3em] mb-8 relative inline-block">
-                Sistema
-                <span className="absolute -bottom-2 left-0 w-8 h-1 bg-teal-600 rounded-full"></span>
-              </h4>
-              <div className="p-4 bg-teal-50 rounded-2xl border border-teal-100 flex items-center gap-4">
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm"><i className="fas fa-database"></i></div>
-                  <div>
-                    <p className="text-[9px] font-black text-teal-950 uppercase">Versão</p>
-                    <p className="text-[11px] font-bold text-teal-600">v6.1.0 Premium</p>
-                  </div>
-              </div>
-            </div>
+      {/* Footer Final */}
+      <footer className="pt-20 pb-12 bg-white border-t border-teal-50">
+        <div className="max-w-7xl mx-auto px-8 flex flex-col items-center gap-10">
+          <div className="flex items-center gap-4">
+             <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-xl ring-4 ring-teal-50">
+               <img src={researcherImg} className="w-full h-full object-cover" alt="Researcher Footer" />
+             </div>
+             <div className="h-px w-20 bg-teal-100 hidden sm:block"></div>
+             <p className="text-[14px] font-black text-teal-950 uppercase tracking-[0.5em]">
+                BIOQUIMICA <span className="text-teal-600">RESEARCH</span>
+             </p>
+             <div className="h-px w-20 bg-teal-100 hidden sm:block"></div>
           </div>
-          
-          <div className="pt-10 border-t border-teal-50 flex flex-col items-center gap-6">
-            <p className="text-[12px] font-black text-teal-950/30 uppercase tracking-[0.4em]">
-              POWERED BY <span className="text-teal-600/60">JOI.A.</span>
-            </p>
-            <p className="text-[10px] font-bold text-teal-300 uppercase tracking-[0.2em] text-center">
-              todos direitos reservados © 2026
-            </p>
+          <div className="text-center space-y-2">
+            <p className="text-[10px] font-bold text-teal-400 uppercase tracking-[0.3em]">Gestão Nacional de Dados Acadêmicos</p>
+            <p className="text-[10px] font-black text-teal-950/20 uppercase tracking-[0.4em]">POWERED BY JOI.A. © 2026</p>
           </div>
         </div>
       </footer>
@@ -346,7 +284,7 @@ const App: React.FC = () => {
             c.city.toLowerCase().trim() === newCol.city.toLowerCase().trim()
           );
           if (isDuplicate) return 'Esta instituição já consta no banco de dados.';
-          const collegeWithMeta: College = { ...newCol, id: crypto.randomUUID(), createdAt: Date.now() };
+          const collegeWithMeta = { ...newCol, id: crypto.randomUUID(), createdAt: Date.now() };
           setColleges(prev => [...prev, collegeWithMeta]);
           return null;
         }} 
