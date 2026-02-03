@@ -287,38 +287,49 @@ const App: React.FC = () => {
       </main>
 
       <footer className="py-16 bg-white border-t border-teal-50">
-        <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center text-white text-xs">
-                 <i className="fas fa-dna"></i>
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center mb-12">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center text-white text-xs shadow-lg shadow-teal-500/20">
+                   <i className="fas fa-dna"></i>
+                </div>
+                <span className="text-lg font-black text-teal-950 tracking-tighter uppercase">Bioquimica Research</span>
               </div>
-              <span className="text-lg font-black text-teal-950 tracking-tighter uppercase">Bioquimica Research</span>
+              <p className="text-[10px] text-teal-400 font-black uppercase tracking-widest leading-relaxed">
+                Mapeamento Institucional e Acadêmico • Brasil 2026
+              </p>
             </div>
-            <p className="text-[10px] text-teal-400 font-black uppercase tracking-widest leading-relaxed">
-              Sistema Premium de Mapeamento Institucional e Acadêmico • Brasil 2026
-            </p>
+            
+            <div className="flex justify-center gap-8">
+               <div className="text-center">
+                  <p className="text-[10px] font-black text-teal-950 uppercase tracking-widest mb-1">{stats.total}</p>
+                  <p className="text-[8px] font-bold text-teal-400 uppercase tracking-widest">Total</p>
+               </div>
+               <div className="text-center">
+                  <p className="text-[10px] font-black text-teal-950 uppercase tracking-widest mb-1">{stats.checked}</p>
+                  <p className="text-[8px] font-bold text-teal-400 uppercase tracking-widest">Concluídos</p>
+               </div>
+               <div className="text-center">
+                  <p className="text-[10px] font-black text-teal-950 uppercase tracking-widest mb-1">{stats.total - stats.checked}</p>
+                  <p className="text-[8px] font-bold text-teal-400 uppercase tracking-widest">Pendentes</p>
+               </div>
+            </div>
+
+            <div className="flex justify-center md:justify-end gap-5">
+               <div className="px-5 py-2.5 bg-teal-50 rounded-xl text-[10px] font-black text-teal-700 uppercase tracking-widest border border-teal-100">
+                 Database v2.0
+               </div>
+            </div>
           </div>
           
-          <div className="flex justify-center gap-8">
-             <div className="text-center">
-                <p className="text-[10px] font-black text-teal-950 uppercase tracking-widest mb-1">{stats.total}</p>
-                <p className="text-[8px] font-bold text-teal-400 uppercase tracking-widest">Total</p>
-             </div>
-             <div className="text-center">
-                <p className="text-[10px] font-black text-teal-950 uppercase tracking-widest mb-1">{stats.checked}</p>
-                <p className="text-[8px] font-bold text-teal-400 uppercase tracking-widest">Concluídos</p>
-             </div>
-             <div className="text-center">
-                <p className="text-[10px] font-black text-teal-950 uppercase tracking-widest mb-1">{stats.total - stats.checked}</p>
-                <p className="text-[8px] font-bold text-teal-400 uppercase tracking-widest">Pendentes</p>
-             </div>
-          </div>
-
-          <div className="flex justify-center md:justify-end gap-5">
-             <div className="px-5 py-2.5 bg-teal-50 rounded-xl text-[10px] font-black text-teal-700 uppercase tracking-widest border border-teal-100">
-               Database v2.0
-             </div>
+          <div className="pt-10 border-t border-teal-50/50 flex flex-col items-center gap-2">
+            <p className="text-[11px] font-black text-teal-950/40 uppercase tracking-[0.3em]">
+              POWERED BY <span className="text-teal-600">JOI.A.</span>
+            </p>
+            <p className="text-[9px] font-bold text-teal-300 uppercase tracking-[0.15em]">
+              todos direitos reservados © 2026
+            </p>
           </div>
         </div>
       </footer>
