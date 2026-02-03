@@ -2,172 +2,48 @@
 import { College } from './types';
 
 export const INITIAL_COLLEGES: College[] = [
-  // REGIAO NORTE
-  { id: 'ac-1', name: 'UFAC', city: 'Rio Branco', state: 'AC', type: 'Federal', phone: '(68) 3901-2500', website: 'ufac.br', courses: ['Biomedicina', 'Farmácia', 'Biologia', 'Nutrição'], createdAt: 1700000000000 },
-  { id: 'ac-2', name: 'UFAC - Campus Floresta', city: 'Cruzeiro do Sul', state: 'AC', type: 'Federal', phone: '(68) 3311-2500', website: 'ufac.br', courses: ['Enfermagem', 'Biologia', 'Engenharia Agronômica'], createdAt: 1700000000001 },
-  { id: 'ac-3', name: 'UNINORTE', city: 'Rio Branco', state: 'AC', type: 'Privada', phone: '(68) 3302-7000', website: 'uninorteac.edu.br', courses: ['Biomedicina', 'Farmácia', 'Enfermagem', 'Odontologia'], createdAt: 1700000000002 },
-  { id: 'ac-4', name: 'FAMETRO', city: 'Rio Branco', state: 'AC', type: 'Privada', phone: '(68) 3223-3000', website: 'fametro.edu.br', courses: ['Biomedicina', 'Farmácia', 'Nutrição'], createdAt: 1700000000003 },
-  { id: 'am-1', name: 'UFAM', city: 'Manaus', state: 'AM', type: 'Federal', phone: '(92) 3305-1181', website: 'ufam.edu.br', courses: ['Farmácia', 'Ciências Biológicas', 'Biotecnologia', 'Medicina'], createdAt: 1700000000004 },
-  { id: 'am-2', name: 'UFAM - ISB', city: 'Coari', state: 'AM', type: 'Federal', phone: '(92) 3305-1181', website: 'isb.ufam.edu.br', courses: ['Biotecnologia', 'Nutrição', 'Enfermagem', 'Medicina'], createdAt: 1700000000005 },
-  { id: 'am-3', name: 'UFAM - ICET', city: 'Itacoatiara', state: 'AM', type: 'Federal', phone: '(92) 3521-3444', website: 'icet.ufam.edu.br', courses: ['Engenharia de Alimentos', 'Biologia', 'Química'], createdAt: 1700000000006 },
-  { id: 'am-4', name: 'UEA', city: 'Manaus', state: 'AM', type: 'Estadual', phone: '(92) 3878-4478', website: 'uea.edu.br', courses: ['Biomedicina', 'Farmácia', 'Medicina', 'Odontologia'], createdAt: 1700000000007 },
-  { id: 'pa-1', name: 'UFPA', city: 'Belém', state: 'PA', type: 'Federal', phone: '(91) 3201-7112', website: 'ufpa.br', courses: ['Bioquímica', 'Biomedicina', 'Farmácia', 'Biotecnologia'], createdAt: 1700000000008 },
-  { id: 'pa-2', name: 'UFOPA', city: 'Santarém', state: 'PA', type: 'Federal', phone: '(93) 2101-4900', website: 'ufopa.edu.br', courses: ['Farmácia', 'Biologia', 'Biotecnologia'], createdAt: 1700000000009 },
-  { id: 'ro-1', name: 'UNIR', city: 'Porto Velho', state: 'RO', type: 'Federal', phone: '(69) 2182-2000', website: 'unir.br', courses: ['Farmácia', 'Biologia', 'Medicina', 'Enfermagem'], createdAt: 1700000000010 },
-  { id: 'to-1', name: 'UFT', city: 'Palmas', state: 'TO', type: 'Federal', phone: '(63) 3229-4000', website: 'uft.edu.br', courses: ['Medicina', 'Nutrição', 'Enfermagem', 'Biologia'], createdAt: 1700000000011 },
+  // --- POLOS DE EXCELÊNCIA EM BIOQUÍMICA (GRADUAÇÃO) ---
+  { id: 'ufv-bq', name: 'Universidade Federal de Viçosa (UFV)', city: 'Viçosa', state: 'MG', type: 'Federal', phone: '(31) 3612-5103', website: 'www.dbq.ufv.br', courses: ['Bioquímica', 'Ciências Biológicas'], createdAt: 1740000000001 },
+  { id: 'ufsj-bq', name: 'Univ. Federal de São João del-Rei (UFSJ)', city: 'Divinópolis', state: 'MG', type: 'Federal', phone: '(37) 3221-1164', website: 'www.ufsj.edu.br/bioquimica', courses: ['Bioquímica', 'Farmácia', 'Medicina'], createdAt: 1740000000002 },
+  { id: 'uem-bq', name: 'Universidade Estadual de Maringá (UEM)', city: 'Maringá', state: 'PR', type: 'Estadual', phone: '(44) 3011-4312', website: 'www.dbq.uem.br', courses: ['Bioquímica', 'Farmácia', 'Ciências Biológicas'], createdAt: 1740000000003 },
 
-  // REGIAO NORDESTE
-  { id: 'ba-1', name: 'UFBA', city: 'Salvador', state: 'BA', type: 'Federal', phone: '(71) 3283-6940', website: 'ufba.br', courses: ['Bioquímica', 'Farmácia', 'Biomedicina', 'Biotecnologia'], createdAt: 1700000000012 },
-  { id: 'ba-2', name: 'UEFS', city: 'Feira de Santana', state: 'BA', type: 'Estadual', phone: '(75) 3161-8000', website: 'uefs.br', courses: ['Farmácia', 'Ciências Biológicas', 'Medicina'], createdAt: 1700000000013 },
-  { id: 'pe-1', name: 'UFPE', city: 'Recife', state: 'PE', type: 'Federal', phone: '(81) 2126-8000', website: 'ufpe.br', courses: ['Biomedicina', 'Farmácia', 'Ciências Biológicas'], createdAt: 1700000000014 },
-  { id: 'ce-1', name: 'UFC', city: 'Fortaleza', state: 'CE', type: 'Federal', phone: '(85) 3366-8262', website: 'ufc.br', courses: ['Farmácia', 'Biotecnologia', 'Ciências Biológicas'], createdAt: 1700000000015 },
-  { id: 'rn-1', name: 'UFRN', city: 'Natal', state: 'RN', type: 'Federal', phone: '(84) 3215-3416', website: 'ufrn.br', courses: ['Bioquímica', 'Biomedicina', 'Farmácia'], createdAt: 1700000000016 },
-  { id: 'pb-1', name: 'UFPB', city: 'João Pessoa', state: 'PB', type: 'Federal', phone: '(83) 3216-7200', website: 'ufpb.br', courses: ['Biomedicina', 'Farmácia', 'Biologia'], createdAt: 1700000000017 },
-  { id: 'ma-1', name: 'UFMA', city: 'São Luís', state: 'MA', type: 'Federal', phone: '(98) 3272-8000', website: 'ufma.br', courses: ['Farmácia', 'Biologia', 'Nutrição'], createdAt: 1700000000018 },
-  { id: 'al-1', name: 'UFAL', city: 'Maceió', state: 'AL', type: 'Federal', phone: '(82) 3214-1100', website: 'ufal.br', courses: ['Farmácia', 'Biologia'], createdAt: 1700000000019 },
+  // --- REGIÃO NORTE (POLOS DE INTERIORIZAÇÃO) ---
+  { id: 'ufam-am', name: 'Universidade Federal do Amazonas (UFAM)', city: 'Manaus', state: 'AM', type: 'Federal', phone: '(92) 3305-1181', website: 'www.ufam.edu.br', courses: ['Farmácia', 'Ciências Biológicas', 'Medicina'], createdAt: 1740000000004 },
+  { id: 'uea-am', name: 'Universidade do Estado do Amazonas (UEA)', city: 'Manaus', state: 'AM', type: 'Estadual', phone: '(92) 3878-4450', website: 'www.uea.edu.br', courses: ['Medicina', 'Enfermagem', 'Odontologia'], createdAt: 1740000000005 },
+  { id: 'fametro-am', name: 'FAMETRO', city: 'Manaus', state: 'AM', type: 'Privada', phone: '(92) 2101-1000', website: 'www.fametro.edu.br', courses: ['Bioquímica', 'Farmácia', 'Nutrição'], createdAt: 1740000000006 },
+  { id: 'unip-am', name: 'UNIP Manaus', city: 'Manaus', state: 'AM', type: 'Privada', phone: '(92) 3643-3800', website: 'www.unip.br', courses: ['Farmácia', 'Enfermagem', 'Biomedicina'], createdAt: 1740000000007 },
+  { id: 'afya-itac', name: 'Afya Itacoatiara', city: 'Itacoatiara', state: 'AM', type: 'Privada', phone: '(92) 3878-3788', website: 'itacoatiara.afya.com.br', courses: ['Medicina'], createdAt: 1740000000008 },
+  { id: 'cesupa-pa', name: 'CESUPA', city: 'Belém', state: 'PA', type: 'Privada', phone: '(91) 4009-9100', website: 'www.cesupa.br', courses: ['Farmácia', 'Medicina', 'Odontologia'], createdAt: 1740000000009 },
+  { id: 'unifamaz-pa', name: 'UNIFAMAZ', city: 'Belém', state: 'PA', type: 'Privada', phone: '(91) 3201-0303', website: 'www.unifamaz.edu.br', courses: ['Biomedicina', 'Enfermagem'], createdAt: 1740000000010 },
+  { id: 'itpac-ac', name: 'ITPAC Cruzeiro do Sul', city: 'Cruzeiro do Sul', state: 'AC', type: 'Privada', phone: '(68) 3311-2000', website: 'cruzeirodosul.afya.com.br', courses: ['Medicina'], createdAt: 1740000000011 },
 
-  // REGIAO CENTRO-OESTE
-  { id: 'df-1', name: 'UnB', city: 'Brasília', state: 'DF', type: 'Federal', phone: '(61) 3107-3300', website: 'unb.br', courses: ['Farmácia', 'Ciências Biológicas', 'Medicina', 'Nutrição'], createdAt: 1700000000020 },
-  { id: 'go-1', name: 'UFG', city: 'Goiânia', state: 'GO', type: 'Federal', phone: '(62) 3521-1000', website: 'ufg.br', courses: ['Biomedicina', 'Farmácia', 'Biotecnologia', 'Biologia'], createdAt: 1700000000021 },
-  { id: 'mt-1', name: 'UFMT', city: 'Cuiabá', state: 'MT', type: 'Federal', phone: '(65) 3615-8000', website: 'ufmt.br', courses: ['Biomedicina', 'Farmácia', 'Biologia', 'Medicina'], createdAt: 1700000000022 },
-  { id: 'ms-1', name: 'UFMS', city: 'Campo Grande', state: 'MS', type: 'Federal', phone: '(67) 3345-7000', website: 'ufms.br', courses: ['Farmácia', 'Biologia', 'Medicina'], createdAt: 1700000000023 },
+  // --- REGIÃO NORDESTE (POLOS ADICIONAIS) ---
+  { id: 'bahiana-med', name: 'Escola Bahiana de Medicina e Saúde Pública', city: 'Salvador', state: 'BA', type: 'Privada', phone: '(71) 3276-8200', website: 'www.bahiana.edu.br', courses: ['Medicina', 'Biomedicina', 'Fisioterapia'], createdAt: 1740000000012 },
+  { id: 'unifor-ce', name: 'UNIFOR', city: 'Fortaleza', state: 'CE', type: 'Privada', phone: '(85) 3477-3000', website: 'www.unifor.br', courses: ['Medicina', 'Farmácia', 'Nutrição'], createdAt: 1740000000013 },
+  { id: 'unichristus-ce', name: 'UNICHRISTUS', city: 'Fortaleza', state: 'CE', type: 'Privada', phone: '(85) 3265-8100', website: 'www.unichristus.edu.br', courses: ['Medicina', 'Biomedicina'], createdAt: 1740000000014 },
+  { id: 'fps-pe', name: 'Faculdade Pernambucana de Saúde (FPS)', city: 'Recife', state: 'PE', type: 'Privada', phone: '(81) 3035-7777', website: 'www.fps.edu.br', courses: ['Medicina', 'Farmácia', 'Enfermagem'], createdAt: 1740000000015 },
+  { id: 'cesmac-al', name: 'CESMAC', city: 'Maceió', state: 'AL', type: 'Privada', phone: '(82) 3215-5000', website: 'www.cesmac.edu.br', courses: ['Medicina', 'Farmácia'], createdAt: 1740000000016 },
 
-  // REGIAO SUDESTE
-  { id: 'sp-1', name: 'USP', city: 'São Paulo', state: 'SP', type: 'Estadual', phone: '(11) 3091-3116', website: 'usp.br', courses: ['Biomedicina', 'Farmácia', 'Biologia', 'Medicina'], createdAt: 1700000000024 },
-  { id: 'sp-2', name: 'UNICAMP', city: 'Campinas', state: 'SP', type: 'Estadual', phone: '(19) 3521-7000', website: 'unicamp.br', courses: ['Farmácia', 'Biologia', 'Medicina'], createdAt: 1700000000025 },
-  { id: 'sp-3', name: 'UNESP', city: 'Araraquara', state: 'SP', type: 'Estadual', phone: '(16) 3301-6100', website: 'fcfar.unesp.br', courses: ['Farmácia-Bioquímica', 'Biotecnologia'], createdAt: 1700000000026 },
-  { id: 'sp-4', name: 'UNIFESP', city: 'São Paulo', state: 'SP', type: 'Federal', phone: '(11) 5576-4848', website: 'unifesp.br', courses: ['Biomedicina', 'Farmácia', 'Biologia'], createdAt: 1700000000027 },
-  { id: 'mg-1', name: 'UFMG', city: 'Belo Horizonte', state: 'MG', type: 'Federal', phone: '(31) 3409-5000', website: 'ufmg.br', courses: ['Biomedicina', 'Farmácia', 'Biologia', 'Medicina'], createdAt: 1700000000028 },
-  { id: 'mg-2', name: 'UFV', city: 'Viçosa', state: 'MG', type: 'Federal', phone: '(31) 3612-0000', website: 'ufv.br', courses: ['Bioquímica', 'Farmácia', 'Biologia'], createdAt: 1700000000029 },
-  { id: 'rj-1', name: 'UFRJ', city: 'Rio de Janeiro', state: 'RJ', type: 'Federal', phone: '(21) 3938-6444', website: 'ufrj.br', courses: ['Bioquímica', 'Biomedicina', 'Farmácia', 'Biotecnologia'], createdAt: 1700000000030 },
-  { id: 'es-1', name: 'UFES', city: 'Vitória', state: 'ES', type: 'Federal', phone: '(27) 4009-2200', website: 'ufes.br', courses: ['Farmácia', 'Ciências Biológicas', 'Medicina'], createdAt: 1700000000031 },
+  // --- REGIÃO SUDESTE (CENTROS DE REFERÊNCIA) ---
+  { id: 'ficsae-sp', name: 'Faculdade Albert Einstein (FICSAE)', city: 'São Paulo', state: 'SP', type: 'Privada', phone: '(11) 2151-1001', website: 'ensino.einstein.br', courses: ['Medicina', 'Enfermagem', 'Engenharia Biomédica'], createdAt: 1740000000017 },
+  { id: 'fcmscsp-sp', name: 'Faculdade de Ciências Médicas da Santa Casa de SP', city: 'São Paulo', state: 'SP', type: 'Privada', phone: '(11) 3367-7700', website: 'fcmsantacasasp.edu.br', courses: ['Medicina', 'Enfermagem', 'Fonoaudiologia'], createdAt: 1740000000018 },
+  { id: 'mandic-sp', name: 'São Leopoldo Mandic', city: 'Campinas', state: 'SP', type: 'Privada', phone: '(19) 3211-3300', website: 'www.slmandic.edu.br', courses: ['Medicina', 'Odontologia'], createdAt: 1740000000019 },
+  { id: 'cmmg-mg', name: 'Faculdade de Ciências Médicas de Minas Gerais', city: 'Belo Horizonte', state: 'MG', type: 'Privada', phone: '(31) 3248-7100', website: 'www.cmmg.edu.br', courses: ['Medicina', 'Enfermagem', 'Fisioterapia'], createdAt: 1740000000020 },
+  { id: 'atenas-mg', name: 'UniAtenas', city: 'Paracatu', state: 'MG', type: 'Privada', phone: '(38) 3672-3737', website: 'www.atenas.edu.br', courses: ['Medicina', 'Farmácia'], createdAt: 1740000000021 },
 
-  // REGIAO SUL
-  { id: 'pr-1', name: 'UFPR', city: 'Curitiba', state: 'PR', type: 'Federal', phone: '(41) 3360-5000', website: 'ufpr.br', courses: ['Biomedicina', 'Farmácia', 'Biologia', 'Medicina'], createdAt: 1700000000032 },
-  { id: 'sc-1', name: 'UFSC', city: 'Florianópolis', state: 'SC', type: 'Federal', phone: '(48) 3721-9000', website: 'ufsc.br', courses: ['Farmácia', 'Ciências Biológicas', 'Medicina'], createdAt: 1700000000033 },
-  { id: 'rs-1', name: 'UFRGS', city: 'Porto Alegre', state: 'RS', type: 'Federal', phone: '(51) 3308-6000', website: 'ufrgs.br', courses: ['Biomedicina', 'Farmácia', 'Biotecnologia', 'Biologia'], createdAt: 1700000000034 },
-  { id: 'rs-2', name: 'UFSM', city: 'Santa Maria', state: 'RS', type: 'Federal', phone: '(55) 3220-8000', website: 'ufsm.br', courses: ['Farmácia', 'Biologia', 'Medicina', 'Nutrição'], createdAt: 1700000000035 },
+  // --- REGIÃO SUL (COMPLEMENTO) ---
+  { id: 'unicesumar-pr', name: 'UniCesumar', city: 'Maringá', state: 'PR', type: 'Privada', phone: '(44) 3027-6360', website: 'www.unicesumar.edu.br', courses: ['Medicina', 'Biomedicina', 'Farmácia'], createdAt: 1740000000022 },
+  { id: 'feevale-rs', name: 'Universidade Feevale', city: 'Novo Hamburgo', state: 'RS', type: 'Privada', phone: '(51) 3586-8800', website: 'www.feevale.br', courses: ['Medicina', 'Biomedicina', 'Farmácia'], createdAt: 1740000000023 },
+  { id: 'ufn-rs', name: 'Universidade Franciscana (UFN)', city: 'Santa Maria', state: 'RS', type: 'Privada', phone: '(55) 3220-1200', website: 'www.unifra.br', courses: ['Medicina', 'Enfermagem', 'Biomedicina'], createdAt: 1740000000024 },
 
-  // ATUALIZAÇÃO 2026 - NOVAS INSTITUIÇÕES (PUCs e OUTRAS)
-  { 
-    id: 'puc-rj-2026', 
-    name: 'PUC-Rio', 
-    city: 'Rio de Janeiro', 
-    state: 'RJ', 
-    type: 'Privada (Comunitária)', 
-    phone: '(21) 3736-1001', 
-    website: 'puc-rio.br', 
-    courses: ['Medicina', 'Enfermagem', 'Nutrição', 'Biomedicina', 'Bioquímica'], 
-    createdAt: 1740000000000 
-  },
-  { 
-    id: 'puc-sp-2026', 
-    name: 'PUC-SP', 
-    city: 'São Paulo', 
-    state: 'SP', 
-    type: 'Privada (Comunitária)', 
-    phone: '(11) 3670-8011', 
-    website: 'pucsp.br', 
-    courses: ['Biomedicina', 'Ciências Biológicas', 'Nutrição', 'Enfermagem', 'Medicina', 'Bioquímica'], 
-    createdAt: 1740000000001 
-  },
-  { 
-    id: 'puc-mg-2026', 
-    name: 'PUC-Minas', 
-    city: 'Belo Horizonte', 
-    state: 'MG', 
-    type: 'Privada (Comunitária)', 
-    phone: '(31) 3319-4444', 
-    website: 'pucminas.br', 
-    courses: ['Medicina', 'Enfermagem', 'Biomedicina', 'Ciências Biológicas', 'Nutrição'], 
-    createdAt: 1740000000002 
-  },
-  { 
-    id: 'puc-pr-2026-cur', 
-    name: 'PUCPR - Curitiba', 
-    city: 'Curitiba', 
-    state: 'PR', 
-    type: 'Privada (Comunitária)', 
-    phone: '(41) 3271-1515', 
-    website: 'pucpr.br', 
-    courses: ['Biotecnologia', 'Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição'], 
-    createdAt: 1740000000003 
-  },
-  { 
-    id: 'puc-pr-2026-lon', 
-    name: 'PUCPR - Londrina', 
-    city: 'Londrina', 
-    state: 'PR', 
-    type: 'Privada (Comunitária)', 
-    phone: '(43) 3372-6000', 
-    website: 'pucpr.br', 
-    courses: ['Biotecnologia', 'Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição'], 
-    createdAt: 1740000000004 
-  },
-  { 
-    id: 'puc-pr-2026-mar', 
-    name: 'PUCPR - Maringá', 
-    city: 'Maringá', 
-    state: 'PR', 
-    type: 'Privada (Comunitária)', 
-    phone: '(44) 3025-8701', 
-    website: 'pucpr.br', 
-    courses: ['Biotecnologia', 'Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição'], 
-    createdAt: 1740000000005 
-  },
-  { 
-    id: 'puc-pr-2026-tol', 
-    name: 'PUCPR - Toledo', 
-    city: 'Toledo', 
-    state: 'PR', 
-    type: 'Privada (Comunitária)', 
-    phone: '(45) 3277-8600', 
-    website: 'pucpr.br', 
-    courses: ['Biotecnologia', 'Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição'], 
-    createdAt: 1740000000006 
-  },
-  { 
-    id: 'puc-camp-2026', 
-    name: 'PUC-Campinas', 
-    city: 'Campinas', 
-    state: 'SP', 
-    type: 'Privada (Comunitária)', 
-    phone: '(19) 3343-7000', 
-    website: 'puc-campinas.edu.br', 
-    courses: ['Medicina', 'Enfermagem', 'Farmácia', 'Nutrição', 'Biologia', 'Biomedicina'], 
-    createdAt: 1740000000007 
-  },
-  { 
-    id: 'puc-go-2026', 
-    name: 'PUC-Goiás', 
-    city: 'Goiânia', 
-    state: 'GO', 
-    type: 'Privada (Comunitária)', 
-    phone: '(62) 3946-1000', 
-    website: 'pucgoias.edu.br', 
-    courses: ['Medicina', 'Biomedicina', 'Enfermagem', 'Nutrição', 'Farmácia'], 
-    createdAt: 1740000000008 
-  },
-  { 
-    id: 'puc-rs-2026', 
-    name: 'PUCRS', 
-    city: 'Porto Alegre', 
-    state: 'RS', 
-    type: 'Privada (Comunitária)', 
-    phone: '(51) 3320-3500', 
-    website: 'pucrs.br', 
-    courses: ['Medicina', 'Enfermagem', 'Farmácia', 'Biomedicina', 'Nutrição', 'Odontologia'], 
-    createdAt: 1740000000009 
-  },
-  { 
-    id: 'sao-camilo-2026', 
-    name: 'Centro Universitário São Camilo', 
-    city: 'São Paulo', 
-    state: 'SP', 
-    type: 'Privada', 
-    phone: '(11) 2588-4000', 
-    website: 'saocamilo-sp.br', 
-    courses: ['Biomedicina', 'Ciências Biológicas', 'Enfermagem', 'Farmácia', 'Nutrição', 'Medicina'], 
-    createdAt: 1740000000010 
-  }
+  // --- REGIÃO CENTRO-OESTE (EXPANSÃO) ---
+  { id: 'unifan-go', name: 'Centro Universitário Alfredo Nasser', city: 'Aparecida de Goiânia', state: 'GO', type: 'Privada', phone: '(62) 3277-3000', website: 'www.unifan.edu.br', courses: ['Medicina', 'Farmácia'], createdAt: 1740000000025 },
+  { id: 'unic-mt', name: 'UNIC Cuiabá', city: 'Cuiabá', state: 'MT', type: 'Privada', phone: '(65) 3363-1000', website: 'www.unic.br', courses: ['Medicina', 'Fisioterapia', 'Enfermagem'], createdAt: 1740000000026 },
+  { id: 'unigran-ms', name: 'UNIGRAN', city: 'Dourados', state: 'MS', type: 'Privada', phone: '(67) 3411-4141', website: 'www.unigran.br', courses: ['Medicina', 'Biomedicina', 'Farmácia'], createdAt: 1740000000027 },
+
+  // PUCs (Mantidas e Refinadas)
+  { id: 'puc-rj', name: 'PUC-Rio', city: 'Rio de Janeiro', state: 'RJ', type: 'Privada (Comunitária)', phone: '(21) 3736-1001', website: 'www.puc-rio.br', courses: ['Medicina', 'Bioquímica', 'Nutrição'], createdAt: 1740000000028 },
+  { id: 'puc-sp', name: 'PUC-SP', city: 'São Paulo', state: 'SP', type: 'Privada (Comunitária)', phone: '(11) 3670-8011', website: 'www.pucsp.br', courses: ['Medicina', 'Bioquímica', 'Fonoaudiologia'], createdAt: 1740000000029 },
+  { id: 'puc-pr', name: 'PUCPR', city: 'Curitiba', state: 'PR', type: 'Privada (Comunitária)', phone: '(41) 3271-1555', website: 'www.pucpr.br', courses: ['Medicina', 'Biotecnologia', 'Farmácia'], createdAt: 1740000000030 },
+  { id: 'puc-rs', name: 'PUCRS', city: 'Porto Alegre', state: 'RS', type: 'Privada (Comunitária)', phone: '(51) 3320-3500', website: 'www.pucrs.br', courses: ['Medicina', 'Biomedicina', 'Psicologia'], createdAt: 1740000000031 }
 ];
