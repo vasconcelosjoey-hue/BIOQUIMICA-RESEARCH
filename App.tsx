@@ -10,19 +10,28 @@ import LoadingScreen from './components/LoadingScreen';
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   
+  // Função auxiliar para remover duplicatas baseada em Nome e Endereço
+  const deduplicate = (list: College[]) => {
+    const seen = new Set<string>();
+    return list.filter(item => {
+      const key = `${item.name.trim().toLowerCase()}|${item.address.trim().toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  };
+
   // ESTADO DOS DADOS
   const [colleges, setColleges] = useState<College[]>(() => {
     try {
       const saved = localStorage.getItem('bioquimica_repo_v11');
       const savedColleges: College[] = saved ? JSON.parse(saved) : [];
-      const registry = new Map<string, College>();
-      INITIAL_COLLEGES.forEach(c => registry.set(c.id, c));
-      savedColleges.forEach(c => {
-        if (!registry.has(c.id)) registry.set(c.id, c);
-      });
-      return Array.from(registry.values());
+      
+      // Merge com Deduplicação
+      const combined = [...INITIAL_COLLEGES, ...savedColleges];
+      return deduplicate(combined);
     } catch (e) {
-      return INITIAL_COLLEGES;
+      return deduplicate(INITIAL_COLLEGES);
     }
   });
 
@@ -52,21 +61,15 @@ const App: React.FC = () => {
         const sharedData = JSON.parse(jsonStr);
 
         if (sharedData.customColleges || sharedData.checkedIds) {
-          // Merge das faculdades customizadas
+          // Merge com deduplicação para faculdades customizadas importadas
           if (sharedData.customColleges) {
-            setColleges(prev => {
-              const registry = new Map<string, College>();
-              prev.forEach(c => registry.set(c.id, c));
-              sharedData.customColleges.forEach((c: College) => registry.set(c.id, c));
-              return Array.from(registry.values());
-            });
+            setColleges(prev => deduplicate([...prev, ...sharedData.customColleges]));
           }
           // Merge dos checks
           if (sharedData.checkedIds) {
             setCheckedIds(prev => new Set([...Array.from(prev), ...sharedData.checkedIds]));
           }
           
-          // Notificação visual simples e limpeza de URL
           alert("📡 Dados de pesquisa importados com sucesso via link compartilhado!");
           window.history.replaceState(null, "", window.location.pathname);
         }
@@ -89,7 +92,6 @@ const App: React.FC = () => {
     localStorage.setItem('bioquimica_checked_v11', JSON.stringify(Array.from(checkedIds)));
   }, [checkedIds]);
 
-  // Fix: added handleToggleCheck to fix the error in line 239 where it was called but not defined
   const handleToggleCheck = (id: string) => {
     setCheckedIds(prev => {
       const next = new Set(prev);
@@ -123,7 +125,6 @@ const App: React.FC = () => {
     }).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   }, [colleges, searchQuery, selectedSphere, selectedState]);
 
-  // FUNÇÃO DE GERAÇÃO DE LINK MÁGICO
   const handleShareLink = () => {
     const customColleges = colleges.filter(c => c.id.startsWith('custom-'));
     const checkedArray = Array.from(checkedIds);
@@ -180,7 +181,6 @@ const App: React.FC = () => {
         onShare={handleShareLink}
       />
 
-      {/* Toast Feedback */}
       {copyFeedback && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-4 duration-300">
            <div className="bg-teal-950 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-teal-500/30">
@@ -191,7 +191,6 @@ const App: React.FC = () => {
       )}
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 md:py-12">
-        {/* Filters Section */}
         <div className="glass-card rounded-[3rem] p-8 md:p-12 mb-16 border border-teal-100 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-50"></div>
           <div className="relative z-10 flex flex-col lg:flex-row gap-10 items-stretch lg:items-end">
@@ -266,8 +265,8 @@ const App: React.FC = () => {
       </footer>
 
       <AddCollegeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={(newCol) => {
-          const collegeWithMeta = { ...newCol, id: `custom-${crypto.randomUUID()}`, createdAt: Date.now() };
-          setColleges(prev => [...prev, collegeWithMeta]);
+          const collegeWithMeta = { ...newCol, id: `custom-${crypto.randomUUID()}`, createdAt: Date.now() } as College;
+          setColleges(prev => deduplicate([...prev, collegeWithMeta]));
           return null;
         }} 
       />
