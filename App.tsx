@@ -7,6 +7,7 @@ import CollegeCard from './components/CollegeCard';
 import AddCollegeModal from './components/AddCollegeModal';
 import LoadingScreen from './components/LoadingScreen';
 
+// Fix: Import React to resolve the missing 'React' namespace error for React.FC
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,8 +21,8 @@ const App: React.FC = () => {
 
   const [colleges, setColleges] = useState<College[]>(() => {
     try {
-      // v8: Migração para limpar dados legados e duplicatas de versões anteriores
-      const saved = localStorage.getItem('bioquimica_repo_v8');
+      // v9: Migração para limpar dados legados e adicionar SP
+      const saved = localStorage.getItem('bioquimica_repo_v9');
       let savedColleges: College[] = saved ? JSON.parse(saved) : [];
       
       const registry = new Map<string, College>();
@@ -34,7 +35,6 @@ const App: React.FC = () => {
       // 2. Mescla com dados salvos (novos registros do usuário)
       savedColleges.forEach(c => {
         const key = getCleanKey(c.name, c.city);
-        // Só adiciona se não for uma das IDs padrões já existentes ou se for um registro novo real
         if (!registry.has(key)) {
           registry.set(key, c);
         }
@@ -48,7 +48,7 @@ const App: React.FC = () => {
 
   const [checkedIds, setCheckedIds] = useState<Set<string>>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_checked_v8');
+      const saved = localStorage.getItem('bioquimica_checked_v9');
       return saved ? new Set(JSON.parse(saved)) : new Set();
     } catch (e) {
       return new Set();
@@ -68,11 +68,11 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_repo_v8', JSON.stringify(colleges));
+    localStorage.setItem('bioquimica_repo_v9', JSON.stringify(colleges));
   }, [colleges]);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_checked_v8', JSON.stringify(Array.from(checkedIds)));
+    localStorage.setItem('bioquimica_checked_v9', JSON.stringify(Array.from(checkedIds)));
   }, [checkedIds]);
 
   const uniqueStates = useMemo(() => {
@@ -120,19 +120,18 @@ const App: React.FC = () => {
 
   const generatePDF = async () => {
     const { jsPDF } = (window as any).jspdf;
-    // Usamos 'l' (landscape) para caberem mais informações horizontais sem esconder nada
     const doc = new jsPDF({
       orientation: 'landscape',
       unit: 'pt',
       format: 'a4'
     });
 
-    // Configuração de Estilo do Cabeçalho do Relatório
-    doc.setFillColor(13, 148, 136); // Teal 600
+    // Cabeçalho do PDF
+    doc.setFillColor(13, 148, 136); 
     doc.rect(0, 0, doc.internal.pageSize.width, 100, 'F');
     
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(28);
+    doc.setFontSize(26);
     doc.setFont('helvetica', 'bold');
     doc.text('BIOQUIMICA RESEARCH', 40, 50);
     
@@ -140,18 +139,23 @@ const App: React.FC = () => {
     doc.setFont('helvetica', 'normal');
     doc.text('DIRETÓRIO NACIONAL DE INSTITUIÇÕES E CURSOS DE BIOCIÊNCIAS', 40, 70);
     
-    doc.setFontSize(8);
-    const date = new Date().toLocaleString('pt-BR');
-    doc.text(`Relatório gerado em: ${date}`, 40, 85);
+    // Contagem Gerencial no Cabeçalho (Nova Funcionalidade)
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Instituições Listadas: ${filteredColleges.length} registros selecionados nesta exportação`, 40, 88);
 
-    // Informação de Filtros Aplicados
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    const date = new Date().toLocaleString('pt-BR');
+    doc.text(`Data da Geração: ${date}`, doc.internal.pageSize.width - 200, 30);
+
+    // Filtros
     doc.setTextColor(13, 148, 136);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    const filterText = `Filtros: Lupa [${searchQuery || 'Nenhum'}] | Esfera [${selectedSphere}] | UF [${selectedState}]`;
+    const filterText = `Filtros Aplicados: Lupa [${searchQuery || 'Nenhum'}] | Esfera [${selectedSphere}] | UF [${selectedState}]`;
     doc.text(filterText, 40, 125);
 
-    // Corpo da Tabela
+    // Tabela
     const tableData = filteredColleges.map(c => [
       c.name,
       `${c.city} - ${c.state}`,
@@ -166,47 +170,19 @@ const App: React.FC = () => {
       head: [['Instituição', 'Localização', 'Tipo', 'Contato', 'Website', 'Cursos Disponíveis']],
       body: tableData,
       theme: 'striped',
-      headStyles: { 
-        fillColor: [15, 118, 110], // Teal 700
-        textColor: 255,
-        fontSize: 9,
-        fontStyle: 'bold',
-        halign: 'left'
-      },
-      styles: { 
-        fontSize: 8,
-        cellPadding: 8,
-        overflow: 'linebreak',
-        valign: 'middle'
-      },
-      columnStyles: {
-        0: { cellWidth: 150 },
-        1: { cellWidth: 100 },
-        2: { cellWidth: 80 },
-        3: { cellWidth: 80 },
-        4: { cellWidth: 100 },
-        5: { cellWidth: 'auto' }
-      },
+      headStyles: { fillColor: [15, 118, 110], textColor: 255, fontSize: 9, fontStyle: 'bold' },
+      styles: { fontSize: 8, cellPadding: 8, overflow: 'linebreak' },
+      columnStyles: { 0: { cellWidth: 150 }, 1: { cellWidth: 100 }, 2: { cellWidth: 80 }, 3: { cellWidth: 80 }, 4: { cellWidth: 100 } },
       margin: { left: 40, right: 40 },
       didDrawPage: (data: any) => {
-        // Rodapé da Página
         doc.setFontSize(8);
         doc.setTextColor(150);
-        const pageCount = doc.internal.getNumberOfPages();
-        doc.text(
-          `Página ${data.pageNumber} de ${pageCount}`,
-          doc.internal.pageSize.width - 100,
-          doc.internal.pageSize.height - 30
-        );
-        doc.text(
-          '© 2026 BIOQUIMICA RESEARCH - Relatório Gerencial',
-          40,
-          doc.internal.pageSize.height - 30
-        );
+        doc.text(`Página ${data.pageNumber}`, doc.internal.pageSize.width - 60, doc.internal.pageSize.height - 20);
+        doc.text('© 2026 BIOQUIMICA RESEARCH - Relatório Gerencial de Dados Acadêmicos', 40, doc.internal.pageSize.height - 20);
       }
     });
 
-    doc.save(`relatorio-bioquimica-research-${selectedState.toLowerCase()}.pdf`);
+    doc.save(`relatorio-bioquimica-research-${selectedState.toLowerCase()}-${filteredColleges.length}-itens.pdf`);
   };
 
   if (isLoading) return <LoadingScreen />;
@@ -273,7 +249,7 @@ const App: React.FC = () => {
               BIOQUIMICA <br className="hidden md:block"/><span className="text-teal-600 italic">RESEARCH</span>
             </h2>
             <p className="text-teal-900/50 font-medium text-sm md:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8">
-              Repositório nacional consolidado. Mapeamos instituições federais, estaduais e privadas com dados exaustivos em biociências.
+              Repositório nacional consolidado. Mapeamos instituições federais, estaduais e privadas com dados exaustivos em biociências e agrárias.
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
@@ -388,7 +364,7 @@ const App: React.FC = () => {
              <div className="h-px w-20 bg-teal-100 hidden sm:block"></div>
           </div>
           <div className="text-center space-y-2">
-            <p className="text-[10px] font-bold text-teal-400 uppercase tracking-[0.3em]">Repositório Higienizado v8.0</p>
+            <p className="text-[10px] font-bold text-teal-400 uppercase tracking-[0.3em]">Repositório Monumental v9.0</p>
             <p className="text-[10px] font-black text-teal-950/20 uppercase tracking-[0.4em]">© 2026 JOI.A. ACADEMIC DATA</p>
           </div>
         </div>
