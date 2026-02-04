@@ -9,31 +9,24 @@ import LoadingScreen from './components/LoadingScreen';
 
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
-
-  // Foto institucional enviada via Firebase Storage
   const researcherImg = "https://firebasestorage.googleapis.com/v0/b/bioquimica-research.firebasestorage.app/o/Gemini_Generated_Image_9z0axj9z0axj9z0a.png?alt=media&token=c7bca208-998d-4505-a9c8-e5108b10cdf7";
-
-  const getCleanKey = (name: string, city: string) => {
-    return `${name.replace(/[().-]/g, '').toLowerCase().trim()}|${city.toLowerCase().trim()}`;
-  };
 
   const [colleges, setColleges] = useState<College[]>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_repo_v10');
-      let savedColleges: College[] = saved ? JSON.parse(saved) : [];
+      const saved = localStorage.getItem('bioquimica_repo_v11');
+      const savedColleges: College[] = saved ? JSON.parse(saved) : [];
       
       const registry = new Map<string, College>();
       
-      // Carrega dados oficiais do INITIAL_COLLEGES
+      // 1. Prioridade para os dados mestres (INITIAL_COLLEGES)
       INITIAL_COLLEGES.forEach(c => {
-        registry.set(getCleanKey(c.name, c.city), c);
+        registry.set(c.id, c);
       });
       
-      // Mescla com novos registros do usuário no localStorage
+      // 2. Adiciona registros customizados do usuário que não conflitem com IDs mestres
       savedColleges.forEach(c => {
-        const key = getCleanKey(c.name, c.city);
-        if (!registry.has(key)) {
-          registry.set(key, c);
+        if (!registry.has(c.id)) {
+          registry.set(c.id, c);
         }
       });
       
@@ -45,7 +38,7 @@ const App: React.FC = () => {
 
   const [checkedIds, setCheckedIds] = useState<Set<string>>(() => {
     try {
-      const saved = localStorage.getItem('bioquimica_checked_v10');
+      const saved = localStorage.getItem('bioquimica_checked_v11');
       return saved ? new Set(JSON.parse(saved)) : new Set();
     } catch (e) {
       return new Set();
@@ -57,7 +50,6 @@ const App: React.FC = () => {
   const [selectedState, setSelectedState] = useState<string>('Todos');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showSync, setShowSync] = useState(false);
-  const [syncKey, setSyncKey] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2400);
@@ -65,45 +57,44 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_repo_v10', JSON.stringify(colleges));
+    localStorage.setItem('bioquimica_repo_v11', JSON.stringify(colleges));
   }, [colleges]);
 
   useEffect(() => {
-    localStorage.setItem('bioquimica_checked_v10', JSON.stringify(Array.from(checkedIds)));
+    localStorage.setItem('bioquimica_checked_v11', JSON.stringify(Array.from(checkedIds)));
   }, [checkedIds]);
 
-  // Lista de estados estática e completa para garantir o "EM BREVE"
-  const stateOptions = useMemo(() => ['Todos', ...ALL_STATES], []);
-
+  // FILTRAGEM INTELIGENTE E ESTRITA
   const filteredColleges = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     
-    return colleges
-      .filter(c => {
-        // Filtro de Estado (Prioridade)
-        const matchesState = selectedState === 'Todos' || c.state === selectedState;
-        if (!matchesState) return false;
+    return colleges.filter(c => {
+      // 1. FILTRO DE ESTADO (ESTRITO)
+      // Se um estado específico for selecionado, NADA de outro estado passa.
+      if (selectedState !== 'Todos' && c.state !== selectedState) {
+        return false;
+      }
 
-        // Filtro Administrativo
-        let matchesSphere = true;
-        const sphereType = c.type.toLowerCase();
-        if (selectedSphere === 'Pública') {
-          matchesSphere = sphereType.includes('federal') || sphereType.includes('estadual') || sphereType.includes('municipal') || sphereType.includes('pública');
-        } else if (selectedSphere === 'Privada') {
-          matchesSphere = sphereType.includes('privada') || sphereType.includes('comunitária');
-        }
-        if (!matchesSphere) return false;
-
-        // Filtro de Busca (Texto)
-        const matchesSearch = !q || 
-          c.name.toLowerCase().includes(q) ||
-          c.city.toLowerCase().includes(q) ||
-          c.state.toLowerCase().includes(q) ||
-          c.courses.some(course => course.toLowerCase().includes(q));
+      // 2. FILTRO ADMINISTRATIVO (ESTRITO)
+      if (selectedSphere !== 'Todos') {
+        const type = c.type.toLowerCase();
+        const isPublic = type.includes('federal') || type.includes('estadual') || type.includes('municipal') || type.includes('pública');
+        const isPrivate = type.includes('privada') || type.includes('comunitária') || type.includes('filantrópica');
         
-        return matchesSearch;
-      })
-      .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+        if (selectedSphere === 'Pública' && !isPublic) return false;
+        if (selectedSphere === 'Privada' && !isPrivate) return false;
+      }
+
+      // 3. FILTRO DE BUSCA (TEXTO)
+      if (q) {
+        const inName = c.name.toLowerCase().includes(q);
+        const inCity = c.city.toLowerCase().includes(q);
+        const inCourses = c.courses.some(course => course.toLowerCase().includes(q));
+        if (!inName && !inCity && !inCourses) return false;
+      }
+
+      return true;
+    }).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   }, [colleges, searchQuery, selectedSphere, selectedState]);
 
   const stats: AppStats = useMemo(() => {
@@ -124,31 +115,31 @@ const App: React.FC = () => {
   const generatePDF = async () => {
     const { jsPDF } = (window as any).jspdf;
     const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    const title = selectedState === 'Todos' ? 'BRASIL' : selectedState;
+    
     doc.setFillColor(13, 148, 136); 
     doc.rect(0, 0, doc.internal.pageSize.width, 100, 'F');
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(26);
+    doc.setFontSize(24);
     doc.setFont('helvetica', 'bold');
-    doc.text('BIOQUIMICA RESEARCH', 40, 50);
+    doc.text(`DIRETÓRIO BIOQUÍMICA: ${title}`, 40, 55);
     doc.setFontSize(10);
-    doc.text(`Instituições Selecionadas: ${filteredColleges.length} registros nesta UF`, 40, 88);
+    doc.text(`Registros Exportados: ${filteredColleges.length} | Data: ${new Date().toLocaleDateString()}`, 40, 85);
     
     const tableData = filteredColleges.map(c => [c.name, `${c.city}-${c.state}`, c.type, c.phone || '-', c.website, c.courses.join(', ')]);
     (doc as any).autoTable({
       startY: 140,
-      head: [['Instituição', 'Localização', 'Tipo', 'Contato', 'Website', 'Cursos']],
+      head: [['Instituição', 'Localização', 'Esfera', 'Contato', 'Website', 'Cursos Principal']],
       body: tableData,
-      theme: 'striped',
+      theme: 'grid',
       headStyles: { fillColor: [15, 118, 110], fontSize: 9 },
-      styles: { fontSize: 8 }
+      styles: { fontSize: 8, cellPadding: 8 }
     });
-    doc.save(`bioquimica-research-${selectedState}.pdf`);
+    doc.save(`bioquimica-research-${title.toLowerCase()}.pdf`);
   };
 
-  if (isLoading) return <LoadingScreen />;
-
   return (
-    <div className="min-h-screen flex flex-col selection:bg-teal-200 selection:text-teal-900 bg-[#F8FAFA] animate-in fade-in duration-1000">
+    <div className="min-h-screen flex flex-col selection:bg-teal-200 selection:text-teal-900 bg-[#F8FAFA]">
       <PremiumHeader 
         searchQuery={searchQuery} 
         setSearchQuery={setSearchQuery} 
@@ -157,110 +148,103 @@ const App: React.FC = () => {
         onToggleSync={() => setShowSync(!showSync)}
       />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6 md:py-12 sm:px-6 lg:px-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 md:py-12">
         
-        {/* Sync Panel */}
+        {/* Sync/Backup Banner */}
         {showSync && (
-          <div className="mb-8 glass-card rounded-3xl p-5 border-2 border-teal-500/10 animate-in slide-in-from-top duration-500">
-             <div className="flex flex-col md:flex-row items-end gap-4">
-               <div className="flex-1 w-full">
-                 <p className="text-[9px] font-black text-teal-800 uppercase tracking-widest mb-2 ml-1">Chave de Restauração de Dados</p>
-                 <input type="text" placeholder="Código de sincronização..." className="w-full px-4 py-3 bg-white border border-teal-50 rounded-xl text-xs outline-none font-mono" />
-               </div>
-                <div className="flex gap-2 w-full md:w-auto">
-                  <button className="flex-1 md:px-6 py-3 bg-teal-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Importar</button>
-                  <button className="flex-1 md:px-6 py-3 bg-white border border-teal-100 text-teal-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Exportar</button>
+          <div className="mb-8 glass-card rounded-3xl p-6 border-2 border-teal-500/20 shadow-xl animate-in slide-in-from-top duration-500">
+             <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="w-12 h-12 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center shrink-0">
+                  <i className="fas fa-cloud-arrow-up text-xl"></i>
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <h4 className="text-sm font-black text-teal-950 uppercase tracking-widest">Sincronização de Dados Local</h4>
+                  <p className="text-xs text-teal-600/70 font-bold mt-1">Seus dados são salvos automaticamente no navegador. Use as opções abaixo para backup manual.</p>
+                </div>
+                <div className="flex gap-3">
+                   <button className="px-6 py-3 bg-teal-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-teal-700 transition-all">Exportar JSON</button>
+                   <button className="px-6 py-3 bg-white border border-teal-200 text-teal-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-teal-50 transition-all">Importar JSON</button>
                 </div>
              </div>
           </div>
         )}
 
-        {/* Hero Section */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 mb-12 md:mb-20 items-center lg:items-center">
-          <div className="shrink-0 relative">
-            <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-[8px] border-white shadow-xl overflow-hidden relative z-10">
-              <img src={researcherImg} alt="Lead Researcher" className="w-full h-full object-cover scale-110" />
-            </div>
-          </div>
-
-          <div className="flex-1 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-50 text-teal-600 rounded-full mb-6 border border-teal-100 shadow-sm">
-               <span className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-ping"></span>
-               <span className="text-[9px] font-black uppercase tracking-[0.2em]">National Academic Repository</span>
-            </div>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-teal-950 tracking-tighter leading-none mb-6">
-              BIOQUIMICA <br className="hidden md:block"/><span className="text-teal-600 italic">RESEARCH</span>
-            </h2>
-            <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-               <div className="flex items-center gap-3 px-5 py-3 bg-white border border-teal-100 rounded-2xl shadow-sm">
-                  <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center"><i className="fas fa-flask"></i></div>
-                  <div className="text-left">
-                    <p className="text-[8px] font-black text-teal-300 uppercase tracking-widest">Total Registros</p>
-                    <p className="text-sm font-black text-teal-950">{colleges.length}</p>
-                  </div>
-               </div>
-               <div className="flex items-center gap-3 px-5 py-3 bg-white border border-teal-100 rounded-2xl shadow-sm">
-                  <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center"><i className="fas fa-microscope"></i></div>
-                  <div className="text-left">
-                    <p className="text-[8px] font-black text-teal-300 uppercase tracking-widest">UF's Mapeadas</p>
-                    <p className="text-sm font-black text-teal-950">{ALL_STATES.length}</p>
-                  </div>
-               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Filters */}
-        <div className="glass-card rounded-[2.5rem] p-6 md:p-10 mb-12 border border-teal-100 shadow-lg relative overflow-hidden group">
-          <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-stretch lg:items-end">
+        {/* Filters Section - Estético e Funcional */}
+        <div className="glass-card rounded-[3rem] p-8 md:p-12 mb-16 border border-teal-100 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-50"></div>
+          
+          <div className="relative z-10 flex flex-col lg:flex-row gap-10 items-stretch lg:items-end">
+            
+            {/* Esfera Administrativa */}
             <div className="flex-1 space-y-4">
-               <label className="block text-[11px] font-black text-teal-950 uppercase tracking-[0.3em] ml-1">Filtragem Administrativa</label>
-               <div className="flex bg-teal-50/50 p-1.5 rounded-2xl border border-teal-100/50">
-                  {['Todos', 'Pública', 'Privada'].map(sphere => (
-                    <button
-                      key={sphere}
-                      onClick={() => setSelectedSphere(sphere as any)}
-                      className={`flex-1 px-4 py-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
-                        selectedSphere === sphere ? 'bg-white text-teal-600 shadow-md' : 'text-teal-400 hover:text-teal-600'
-                      }`}
-                    >
-                      {sphere}
-                    </button>
-                  ))}
-               </div>
-            </div>
-
-            <div className="w-full lg:w-80 space-y-4">
-               <label className="block text-[11px] font-black text-teal-950 uppercase tracking-[0.3em] ml-1">Região Geográfica</label>
-               <div className="relative">
-                  <select
-                    value={selectedState}
-                    onChange={(e) => setSelectedState(e.target.value)}
-                    className="w-full bg-white border-2 border-teal-50 rounded-2xl px-6 py-3.5 text-xs font-black text-teal-950 outline-none appearance-none cursor-pointer"
+              <label className="flex items-center gap-2 text-[11px] font-black text-teal-900 uppercase tracking-[0.3em] ml-2">
+                <i className="fas fa-filter text-[10px] text-teal-400"></i>
+                Filtragem Administrativa
+              </label>
+              <div className="grid grid-cols-3 bg-teal-50/50 p-1.5 rounded-2xl border border-teal-100/50">
+                {['Todos', 'Pública', 'Privada'].map(sphere => (
+                  <button
+                    key={sphere}
+                    onClick={() => setSelectedSphere(sphere as any)}
+                    className={`px-4 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                      selectedSphere === sphere 
+                      ? 'bg-white text-teal-600 shadow-lg ring-1 ring-teal-100' 
+                      : 'text-teal-400 hover:text-teal-700'
+                    }`}
                   >
-                    {stateOptions.map(st => (
-                      <option key={st} value={st}>{st === 'Todos' ? 'Todos os Estados' : `Estado: ${st}`}</option>
-                    ))}
-                  </select>
-                  <i className="fas fa-map-location absolute right-6 top-1/2 -translate-y-1/2 text-teal-200 pointer-events-none"></i>
-               </div>
+                    {sphere}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={generatePDF} className="h-[56px] px-8 bg-white border-2 border-teal-600 text-teal-600 font-black rounded-2xl hover:bg-teal-50 flex items-center justify-center gap-3">
-                <i className="fas fa-file-pdf"></i>
-                <span className="text-xs uppercase tracking-[0.2em]">PDF</span>
-              </button>
-              <button onClick={() => setIsModalOpen(true)} className="h-[56px] px-8 bg-teal-950 text-white font-black rounded-2xl hover:bg-teal-900 flex items-center justify-center gap-3">
-                <i className="fas fa-plus"></i>
-                <span className="text-xs uppercase tracking-[0.2em]">Adicionar</span>
-              </button>
+            {/* Selector de Estado */}
+            <div className="w-full lg:w-96 space-y-4">
+              <label className="flex items-center gap-2 text-[11px] font-black text-teal-900 uppercase tracking-[0.3em] ml-2">
+                <i className="fas fa-map-pin text-[10px] text-teal-400"></i>
+                Região Geográfica
+              </label>
+              <div className="relative group">
+                <select
+                  value={selectedState}
+                  onChange={(e) => setSelectedState(e.target.value)}
+                  className="w-full bg-white border-2 border-teal-50 rounded-2xl px-8 py-4 text-xs font-black text-teal-950 outline-none appearance-none cursor-pointer group-hover:border-teal-200 transition-all shadow-inner"
+                >
+                  <option value="Todos">Todas as Unidades (Brasil)</option>
+                  {ALL_STATES.map(st => (
+                    <option key={st} value={st}>Estado: {st}</option>
+                  ))}
+                </select>
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-3 pointer-events-none">
+                   <div className="w-px h-4 bg-teal-100"></div>
+                   <i className="fas fa-chevron-down text-teal-300 text-[10px]"></i>
+                </div>
+              </div>
+            </div>
+
+            {/* Ações Rápidas */}
+            <div className="flex gap-4 shrink-0">
+               <button 
+                 onClick={generatePDF}
+                 disabled={filteredColleges.length === 0}
+                 className="flex-1 lg:flex-none h-[64px] px-10 bg-white border-2 border-teal-600 text-teal-600 font-black rounded-2xl hover:bg-teal-50 transition-all flex items-center justify-center gap-4 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+               >
+                 <i className="fas fa-file-pdf text-lg"></i>
+                 <span className="text-[10px] uppercase tracking-widest">Gerar PDF</span>
+               </button>
+               <button 
+                 onClick={() => setIsModalOpen(true)}
+                 className="flex-1 lg:flex-none h-[64px] px-10 bg-teal-950 text-white font-black rounded-2xl hover:bg-teal-900 transition-all flex items-center justify-center gap-4 shadow-xl shadow-teal-950/20 active:scale-95"
+               >
+                 <i className="fas fa-plus text-lg"></i>
+                 <span className="text-[10px] uppercase tracking-widest">Adicionar</span>
+               </button>
             </div>
           </div>
         </div>
 
-        {/* Results */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mb-32">
+        {/* Grid de Resultados */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 mb-40">
           {filteredColleges.map((college) => (
             <CollegeCard
               key={college.id}
@@ -270,52 +254,71 @@ const App: React.FC = () => {
             />
           ))}
 
-          {/* Caso de "EM BREVE" para Estados Selecionados */}
+          {/* ESTADO VISUAL: EM BREVE */}
           {filteredColleges.length === 0 && selectedState !== 'Todos' && (
-            <div className="col-span-full py-20 px-8 glass-card rounded-[3rem] text-center border-4 border-dashed border-teal-100 flex flex-col items-center justify-center">
-               <div className="w-24 h-24 bg-teal-50 rounded-full flex items-center justify-center mb-6 animate-pulse">
-                  <i className="fas fa-map-marked-alt text-4xl text-teal-200"></i>
+            <div className="col-span-full py-32 glass-card rounded-[4rem] border-4 border-dashed border-teal-100/50 flex flex-col items-center text-center px-8 animate-in zoom-in duration-500">
+               <div className="relative mb-10">
+                  <div className="absolute inset-0 bg-teal-400/10 blur-3xl rounded-full scale-150 animate-pulse"></div>
+                  <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center border-2 border-teal-50 shadow-2xl relative z-10">
+                    <i className="fas fa-map-location-dot text-5xl text-teal-200"></i>
+                  </div>
                </div>
-               <h3 className="text-3xl font-black text-teal-950 uppercase tracking-tighter mb-4">EM BREVE</h3>
-               <p className="text-teal-600/60 font-bold uppercase tracking-widest text-[10px] max-w-sm">
-                  A nossa equipe de pesquisa acadêmica ainda está processando os dados de {selectedState}. 
-                  Novos registros são inseridos diariamente.
+               <h3 className="text-4xl md:text-5xl font-black text-teal-950 uppercase tracking-tighter mb-4">Em Breve: {selectedState}</h3>
+               <p className="text-teal-600/60 font-bold uppercase tracking-[0.3em] text-[10px] max-w-md leading-relaxed">
+                 Nossa equipe de coleta de dados está atualmente processando as instituições de {selectedState}. 
+                 Novos registros são validados e inseridos no repositório a cada 24 horas.
                </p>
-               <button 
-                 onClick={() => setSelectedState('Todos')}
-                 className="mt-8 px-8 py-3 bg-teal-950 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-teal-900 transition-all"
-               >
-                 Ver Todos os Estados
-               </button>
+               <div className="mt-12 flex flex-col sm:flex-row gap-4">
+                  <button 
+                    onClick={() => setSelectedState('Todos')}
+                    className="px-8 py-4 bg-teal-950 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-teal-900 transition-all shadow-xl active:scale-95"
+                  >
+                    Voltar para Todos os Estados
+                  </button>
+                  <button 
+                    onClick={() => setIsModalOpen(true)}
+                    className="px-8 py-4 bg-white border border-teal-200 text-teal-600 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-teal-50 transition-all active:scale-95"
+                  >
+                    Contribuir com este Estado
+                  </button>
+               </div>
             </div>
           )}
 
-          {/* Fallback para busca vazia em "Todos" */}
+          {/* Feedback de Busca Vazia */}
           {filteredColleges.length === 0 && selectedState === 'Todos' && (
-            <div className="col-span-full py-20 text-center opacity-50">
-               <i className="fas fa-search-minus text-4xl text-teal-200 mb-4 block"></i>
-               <p className="text-sm font-black text-teal-900 uppercase tracking-widest">Nenhum resultado encontrado para os filtros atuais</p>
-            </div>
+             <div className="col-span-full py-20 text-center flex flex-col items-center">
+                <i className="fas fa-search-minus text-4xl text-teal-100 mb-6"></i>
+                <p className="text-sm font-black text-teal-900 uppercase tracking-widest opacity-40">Nenhum registro encontrado para "{searchQuery}"</p>
+                <button onClick={() => setSearchQuery('')} className="mt-4 text-[10px] font-black text-teal-600 underline uppercase tracking-widest">Limpar Busca</button>
+             </div>
           )}
         </div>
       </main>
 
-      <footer className="pt-20 pb-12 bg-white border-t border-teal-50 text-center">
+      <footer className="pt-24 pb-16 bg-white border-t border-teal-50 text-center">
+         <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="h-px w-12 bg-teal-100"></div>
+            <i className="fas fa-dna text-teal-200"></i>
+            <div className="h-px w-12 bg-teal-100"></div>
+         </div>
          <p className="text-[14px] font-black text-teal-950 uppercase tracking-[0.5em]">
             BIOQUIMICA <span className="text-teal-600">RESEARCH</span>
          </p>
-         <p className="text-[10px] font-black text-teal-950/20 uppercase tracking-[0.4em] mt-4">© 2026 JOI.A. ACADEMIC DATA - REPOSITÓRIO MONUMENTAL V10</p>
+         <p className="text-[10px] font-black text-teal-950/20 uppercase tracking-[0.4em] mt-4">
+           © 2026 JOI.A. ACADEMIC DATA - DIRETÓRIO NACIONAL MONUMENTAL V11
+         </p>
       </footer>
 
       <AddCollegeModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         onAdd={(newCol) => {
-          const isDuplicate = colleges.some(c => 
-            getCleanKey(c.name, c.city) === getCleanKey(newCol.name, newCol.city)
-          );
-          if (isDuplicate) return 'Esta instituição já consta no banco de dados.';
-          const collegeWithMeta = { ...newCol, id: crypto.randomUUID(), createdAt: Date.now() };
+          const collegeWithMeta = { 
+            ...newCol, 
+            id: `custom-${crypto.randomUUID()}`, 
+            createdAt: Date.now() 
+          };
           setColleges(prev => [...prev, collegeWithMeta]);
           return null;
         }} 
