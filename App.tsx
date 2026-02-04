@@ -118,6 +118,97 @@ const App: React.FC = () => {
     });
   };
 
+  const generatePDF = async () => {
+    const { jsPDF } = (window as any).jspdf;
+    // Usamos 'l' (landscape) para caberem mais informações horizontais sem esconder nada
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: 'a4'
+    });
+
+    // Configuração de Estilo do Cabeçalho do Relatório
+    doc.setFillColor(13, 148, 136); // Teal 600
+    doc.rect(0, 0, doc.internal.pageSize.width, 100, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.text('BIOQUIMICA RESEARCH', 40, 50);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('DIRETÓRIO NACIONAL DE INSTITUIÇÕES E CURSOS DE BIOCIÊNCIAS', 40, 70);
+    
+    doc.setFontSize(8);
+    const date = new Date().toLocaleString('pt-BR');
+    doc.text(`Relatório gerado em: ${date}`, 40, 85);
+
+    // Informação de Filtros Aplicados
+    doc.setTextColor(13, 148, 136);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    const filterText = `Filtros: Lupa [${searchQuery || 'Nenhum'}] | Esfera [${selectedSphere}] | UF [${selectedState}]`;
+    doc.text(filterText, 40, 125);
+
+    // Corpo da Tabela
+    const tableData = filteredColleges.map(c => [
+      c.name,
+      `${c.city} - ${c.state}`,
+      c.type,
+      c.phone || '-',
+      c.website,
+      c.courses.join(', ')
+    ]);
+
+    (doc as any).autoTable({
+      startY: 140,
+      head: [['Instituição', 'Localização', 'Tipo', 'Contato', 'Website', 'Cursos Disponíveis']],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { 
+        fillColor: [15, 118, 110], // Teal 700
+        textColor: 255,
+        fontSize: 9,
+        fontStyle: 'bold',
+        halign: 'left'
+      },
+      styles: { 
+        fontSize: 8,
+        cellPadding: 8,
+        overflow: 'linebreak',
+        valign: 'middle'
+      },
+      columnStyles: {
+        0: { cellWidth: 150 },
+        1: { cellWidth: 100 },
+        2: { cellWidth: 80 },
+        3: { cellWidth: 80 },
+        4: { cellWidth: 100 },
+        5: { cellWidth: 'auto' }
+      },
+      margin: { left: 40, right: 40 },
+      didDrawPage: (data: any) => {
+        // Rodapé da Página
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        const pageCount = doc.internal.getNumberOfPages();
+        doc.text(
+          `Página ${data.pageNumber} de ${pageCount}`,
+          doc.internal.pageSize.width - 100,
+          doc.internal.pageSize.height - 30
+        );
+        doc.text(
+          '© 2026 BIOQUIMICA RESEARCH - Relatório Gerencial',
+          40,
+          doc.internal.pageSize.height - 30
+        );
+      }
+    });
+
+    doc.save(`relatorio-bioquimica-research-${selectedState.toLowerCase()}.pdf`);
+  };
+
   if (isLoading) return <LoadingScreen />;
 
   return (
@@ -244,13 +335,23 @@ const App: React.FC = () => {
                </div>
             </div>
 
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="h-[56px] px-8 bg-teal-950 text-white font-black rounded-2xl hover:bg-teal-900 shadow-2xl transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1"
-            >
-              <i className="fas fa-plus-circle text-lg"></i>
-              <span className="text-xs uppercase tracking-[0.2em]">Novo Registro</span>
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={generatePDF}
+                className="h-[56px] px-8 bg-white border-2 border-teal-600 text-teal-600 font-black rounded-2xl hover:bg-teal-50 shadow-xl transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1 active:scale-95"
+              >
+                <i className="fas fa-file-pdf text-lg"></i>
+                <span className="text-xs uppercase tracking-[0.2em]">Gerar PDF</span>
+              </button>
+
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="h-[56px] px-8 bg-teal-950 text-white font-black rounded-2xl hover:bg-teal-900 shadow-2xl transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1 active:scale-95"
+              >
+                <i className="fas fa-plus-circle text-lg"></i>
+                <span className="text-xs uppercase tracking-[0.2em]">Novo Registro</span>
+              </button>
+            </div>
           </div>
         </div>
 
